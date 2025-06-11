@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz App</title>
+</head>
+<body>
+  <div id="quiz-container">
+    <h2 id="question-title"></h2>
+    <form id="quiz-form">
+      <label><input type="radio" name="option" value="A" onchange="toggleCustom(false)"> <span id="labelA"></span></label><br>
+      <label><input type="radio" name="option" value="B" onchange="toggleCustom(false)"> <span id="labelB"></span></label><br>
+      <label><input type="radio" name="option" value="C" onchange="toggleCustom(false)"> <span id="labelC"></span></label><br>
+      <label><input type="radio" name="option" value="D" onchange="toggleCustom(true)"> <span id="labelD"></span></label><br>
+      <input type="text" id="custom-answer" placeholder="Your answer" style="display:none; margin-top: 10px;"><br><br>
+      <button type="button" onclick="submitAnswer()">Next</button>
+    </form>
+  </div>
+
+  <div id="result" style="display: none;">
+    <h2>Quiz Complete!</h2>
+    <p>Your Score: <span id="score"></span>/10</p>
+    <pre id="user-answers-output"></pre>
+  </div>
+
+  <script>
+    const questions = [
+      { 
+      question: "What is the capital of France?", 
+      options: 
+        { A: "Paris", 
+          B: "Berlin", 
+          C: "Rome", 
+          D: "Other" 
+        } },
+
+      { 
+        question: "What is 5 + 3?", 
+        options: { 
+          A: "6", 
+          B: "7", 
+          C: "8", 
+          D: "Other" 
+        } 
+      },
+      
+      { 
+        question: "Which planet is known as the Red Planet?", 
+        options: { 
+          A: "Earth", 
+          B: "Mars", 
+          C: "Jupiter", 
+          D: "Other" 
+        } 
+      },
+      
+      { 
+        question: "What is the largest ocean?", 
+        options: { 
+          A: "Atlantic", 
+          B: "Indian", 
+          C: "Arctic", 
+          D: "Other" 
+        } 
+      },
+      
+      { 
+        question: "How many legs does a spider have?", 
+        options: { 
+          A: "6", 
+          B: "8", 
+          C: "10", 
+          D: "Other" 
+        } 
+      },
+      
+      { 
+        question: "What color do you get when you mix red and yellow?", 
+        options: { 
+          A: "Orange", 
+          B: "Green", 
+          C: "Purple", 
+          D: "Other"
+         }
+      },
+      
+      { 
+        question: "Which gas do plants use for photosynthesis?", 
+        options: 
+        { 
+          A: "Oxygen", 
+          B: "Hydrogen", 
+          C: "Carbon Dioxide", 
+          D: "Other" } },
+      
+      { 
+        question: "Which shape has 4 equal sides?", 
+        options: 
+        { 
+          A: "Triangle", 
+          B: "Circle", 
+          C: "Square", 
+          D: "Other" 
+        } 
+      },
+      
+      { 
+        question: "How many days are there in a week?", 
+        options: 
+        { 
+          A: "5", 
+          B: "6", 
+          C: "7", 
+          D: "Other" 
+        } },
+      
+      { 
+        question: "Which instrument has black and white keys?", 
+        options: 
+        { 
+          A: "Guitar",
+          B: "Violin", 
+          C: "Piano", 
+          D: "Other" 
+        } 
+      }
+    ];
+
+    const correctAnswers = { 
+      0: "A", 
+      1: "C", 
+      2: "B", 
+      3: "A", 
+      4: "B", 
+      5: "A", 
+      6: "C", 
+      7: "C", 
+      8: "C", 
+      9: "C" 
+    };
+    const userAnswers = {};
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const { question, options } = questions[currentQuestion];
+      document.getElementById("question-title").textContent = `Q${currentQuestion + 1}: ${question}`;
+      Object.entries(options).forEach(([key, value]) => {
+        document.getElementById(`label${key}`).textContent = value;
+      });
+
+      document.querySelectorAll('input[name="option"]').forEach(el => el.checked = false);
+      toggleCustom(false);
+      document.getElementById("custom-answer").value = "";
+    }
+
+    function toggleCustom(show) {
+      document.getElementById("custom-answer").style.display = show ? "inline" : "none";
+    }
+
+    function submitAnswer() {
+      const selected = document.querySelector('input[name="option"]:checked');
+      if (!selected) return alert("Please select an answer.");
+
+      const answerKey = selected.value;
+      const q = questions[currentQuestion];
+
+      if (answerKey === "D") {
+        const customInput = document.getElementById("custom-answer").value.trim();
+        if (!customInput) return alert("Please enter your custom answer.");
+        userAnswers[currentQuestion] = customInput;
+      } else {
+        userAnswers[currentQuestion] = q.options[answerKey];
+        if (answerKey === correctAnswers[currentQuestion]) score++;
+      }
+
+      currentQuestion++;
+      currentQuestion < questions.length ? loadQuestion() : showResult();
+    }
+
+    function showResult() {
+      document.getElementById("quiz-container").style.display = "none";
+      document.getElementById("score").textContent = score;
+
+      let output = "";
+      questions.forEach((q, i) => {
+        output += `Q${i + 1}: ${userAnswers[i] || "Not Answered"}\n`;
+      });
+
+      document.getElementById("user-answers-output").textContent = output;
+      document.getElementById("result").style.display = "block";
+    }
+    loadQuestion();
+  </script>
+</body>
+</html>
