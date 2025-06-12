@@ -1,0 +1,172 @@
+[
+  {
+    "question": "What is the capital of Australia?",
+    "options": {
+      "A": "Sydney",
+      "B": "Melbourne",
+      "C": "Canberra",
+      "D": "Brisbane",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Sydney is a popular guess — it's a major city after all!",
+      "B": "Melbourne is known for culture and sports. Good choice!",
+      "C": "Nice selection! It shows you know your geography.",
+      "D": "Brisbane is growing fast — a smart thought!",
+      "E": "Thanks for your unique answer! It’s great to see creative thinking."
+    }
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "options": {
+      "A": "Earth",
+      "B": "Mars",
+      "C": "Jupiter",
+      "D": "Venus",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Earth is home, and it's pretty colorful too!",
+      "B": "Great choice! That planet has always sparked curiosity.",
+      "C": "Jupiter is huge — you're aiming big!",
+      "D": "Venus is often confused here. Nice guess!",
+      "E": "Interesting answer! We love your out-of-the-box thinking."
+    }
+  },
+  {
+    "question": "Who wrote the play 'Romeo and Juliet'?",
+    "options": {
+      "A": "Charles Dickens",
+      "B": "William Shakespeare",
+      "C": "Jane Austen",
+      "D": "Mark Twain",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Dickens is a literary icon — clever pick!",
+      "B": "That’s a classic choice. Well done!",
+      "C": "Jane Austen's stories are timeless. Good thinking!",
+      "D": "Mark Twain wrote with wit — an interesting guess!",
+      "E": "Thanks for your answer! Literature has so many greats."
+    }
+  },
+  {
+    "question": "Which element has the chemical symbol 'O'?",
+    "options": {
+      "A": "Gold",
+      "B": "Oxygen",
+      "C": "Osmium",
+      "D": "Zinc",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Gold is shiny and valuable — a royal pick!",
+      "B": "That’s a smart choice for science fans!",
+      "C": "Osmium is dense and unique — nice one!",
+      "D": "Zinc plays a big role in our health. Interesting!",
+      "E": "Cool input! Chemistry welcomes curious minds like yours."
+    }
+  },
+  {
+    "question": "What is the largest ocean on Earth?",
+    "options": {
+      "A": "Atlantic Ocean",
+      "B": "Indian Ocean",
+      "C": "Southern Ocean",
+      "D": "Pacific Ocean",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "The Atlantic is powerful — a strong answer!",
+      "B": "Indian Ocean is rich with history. Great pick!",
+      "C": "Southern Ocean is fascinating — cold and vast!",
+      "D": "That’s a big one! Great choice.",
+      "E": "Thank you for your answer! Always nice to see a new take."
+    }
+  },
+  {
+    "question": "Which language is used to create web pages?",
+    "options": {
+      "A": "Python",
+      "B": "HTML",
+      "C": "C++",
+      "D": "Java",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Python is powerful! Many websites use it behind the scenes.",
+      "B": "Spot-on for building the structure of web pages!",
+      "C": "C++ is solid for system programming — creative answer!",
+      "D": "Java is everywhere — a logical guess!",
+      "E": "Nice thought! The web is built on many tools."
+    }
+  },
+  {
+    "question": "How many continents are there on Earth?",
+    "options": {
+      "A": "5",
+      "B": "6",
+      "C": "7",
+      "D": "8",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "An older model says 5 — smart historical reference!",
+      "B": "6 is taught in some regions — clever thinking!",
+      "C": "That's a popular and widely accepted answer!",
+      "D": "Interesting! Some models do propose 8!",
+      "E": "Fascinating! Geography is always evolving."
+    }
+  },
+  {
+    "question": "Who painted the Mona Lisa?",
+    "options": {
+      "A": "Pablo Picasso",
+      "B": "Leonardo da Vinci",
+      "C": "Vincent van Gogh",
+      "D": "Claude Monet",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Picasso changed the world of art — sharp choice!",
+      "B": "A timeless name in the art world!",
+      "C": "Van Gogh’s work is unforgettable — great guess!",
+      "D": "Monet’s impressionism is beautiful — well picked!",
+      "E": "Thank you! Art has so many legends to admire."
+    }
+  },
+  {
+    "question": "What is the boiling point of water at sea level?",
+    "options": {
+      "A": "90°C",
+      "B": "95°C",
+      "C": "100°C",
+      "D": "110°C",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "That’s a bit low — but a thoughtful estimate!",
+      "B": "Close! You're on the right track.",
+      "C": "That's a textbook answer — nicely done!",
+      "D": "Hot take! Literally.",
+      "E": "Thanks! Love how you’re thinking independently."
+    }
+  },
+  {
+    "question": "Which animal is known as the 'King of the Jungle'?",
+    "options": {
+      "A": "Elephant",
+      "B": "Tiger",
+      "C": "Lion",
+      "D": "Bear",
+      "E": "Other (Write your own answer)"
+    },
+    "feedback": {
+      "A": "Elephants are wise and mighty — great choice!",
+      "B": "Tigers are powerful — a strong contender!",
+      "C": "A classic royal pick!",
+      "D": "Bears are bold — interesting choice!",
+      "E": "That’s a cool perspective! Love the creativity."
+    }
+  }
+]

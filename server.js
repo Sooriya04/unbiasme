@@ -10,21 +10,29 @@ const port = 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Session setup
 app.use(session({
     secret: 'yourSecretKey',
     resave: false,
     saveUninitialized: false
 }));
 
-// Set view engine
+// View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Routers
-const userRouter = require('./api/User');
-app.use('/user', userRouter);
+// Static folder (if needed for CSS or JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
+const userRouter = require('./api/User');
+const quizRouter = require('./api/quiz');
+
+// using routes
+app.use('/user', userRouter);
+app.use('/quiz', quizRouter);
+
+// render home page
 app.get('/', (req, res) => {
     if (req.session.user) {
         res.render('home', { name: req.session.user.name });
@@ -32,16 +40,22 @@ app.get('/', (req, res) => {
         res.redirect('/login');
     }
 });
-
+// render login page
 app.get('/login', (req, res) => res.render('login'));
+
+// render signup page
 app.get('/signup', (req, res) => res.render('signup'));
 
+// logout
 app.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/login');
     });
 });
 
+// render quiz page
+app.get('/quiz', (req, res) => {res.render('quiz');});
+
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`✅ Server is running on http://localhost:${port}`);
 });

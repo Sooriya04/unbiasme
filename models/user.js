@@ -9,7 +9,5 @@ const userSchema = new Schema({
     verified : Boolean,
     
 })
-
 const User = mongoose.model('User', userSchema);
-
 module.exports = User;

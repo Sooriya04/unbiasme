@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+
+    #feedback-screen {
+      display: none;
+      background-color: #ffffff;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      font-weight: bold;
+      z-index: 9999;
+      color: #222;
+    }
+
+    #custom-answer {
+      margin-top: 10px;
+      padding: 5px;
+      width: 95%;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="quiz-container">
+    <h2 id="question-title"></h2>
+    <form id="quiz-form">
+      <label><input type="radio" name="option" value="A" onchange="toggleCustom(false)"> <span id="labelA"></span></label>
+      <label><input type="radio" name="option" value="B" onchange="toggleCustom(false)"> <span id="labelB"></span></label>
+      <label><input type="radio" name="option" value="C" onchange="toggleCustom(false)"> <span id="labelC"></span></label>
+      <label><input type="radio" name="option" value="D" onchange="toggleCustom(false)"> <span id="labelD"></span></label>
+      <label><input type="radio" name="option" value="E" onchange="toggleCustom(true)"> Other:</label>
+      <input type="text" id="custom-answer" placeholder="Your answer" style="display:none;"><br><br>
+      <button type="button" onclick="submitAnswer()">Next</button>
+    </form>
+  </div>
+
+  <div id="feedback-screen"></div>
+
+  <div id="result" style="display: none;">
+    <h2>Quiz Complete!</h2>
+    <p>Your Score: <span id="score"></span>/10</p>
+    <pre id="user-answers-output"></pre>
+  </div>
+
+  <script>
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+    const userAnswers = {};
+
+    async function fetchQuestions() {
+      const res = await fetch('/quiz/questions');
+      questions = await res.json();
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question-title").textContent = `Q${currentQuestion + 1}: ${q.question}`;
+      document.getElementById("labelA").textContent = q.options.A;
+      document.getElementById("labelB").textContent = q.options.B;
+      document.getElementById("labelC").textContent = q.options.C;
+      document.getElementById("labelD").textContent = q.options.D;
+
+      document.querySelectorAll('input[name="option"]').forEach(el => el.checked = false);
+      toggleCustom(false);
+      document.getElementById("custom-answer").value = "";
+    }
+
+    function toggleCustom(show) {
+      document.getElementById("custom-answer").style.display = show ? "inline-block" : "none";
+    }
+
+    function submitAnswer() {
+      const selected = document.querySelector('input[name="option"]:checked');
+      if (!selected) return alert("Please select an answer.");
+
+      const answerKey = selected.value;
+      const q = questions[currentQuestion];
+      let answerText = "";
+
+      if (answerKey === "E") {
+        const customInput = document.getElementById("custom-answer").value.trim();
+        if (!customInput) return alert("Please enter your custom answer.");
+        answerText = customInput;
+      } else {
+        answerText = q.options[answerKey];
+      }
+
+      const feedback = q.feedback[answerKey] || "Thanks for your answer!";
+      userAnswers[currentQuestion] = answerText;
+
+      document.getElementById("feedback-screen").textContent = feedback;
+      document.getElementById("feedback-screen").style.display = "flex";
+      document.getElementById("quiz-container").style.display = "none";
+
+      setTimeout(() => {
+        document.getElementById("feedback-screen").style.display = "none";
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          document.getElementById("quiz-container").style.display = "block";
+          loadQuestion();
+        } else {
+          showResult();
+        }
+      }, 10000); //seconds
+    }
+
+    function showResult() {
+      document.getElementById("quiz-container").style.display = "none";
+      document.getElementById("score").textContent = score;
+      document.getElementById("result").style.display = "block";
+
+      let output = "";
+      questions.forEach((q, i) => {
+        output += `Q${i + 1}: ${userAnswers[i] || "Not Answered"}\n`;
+      });
+
+      document.getElementById("user-answers-output").textContent = output;
+    }
+
+    fetchQuestions();
+  </script>
+</body>
+</html>

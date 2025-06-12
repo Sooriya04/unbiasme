@@ -8,7 +8,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 // ------------------------ Signup Route ------------------------
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
     let { name, email, password } = req.body;
     name = name?.trim();
     email = email?.trim();
@@ -81,7 +81,7 @@ router.post('/signup', (req, res) => {
 });
 
 // ------------------------ Signin Route ------------------------
-router.post('/signin', (req, res) => {
+router.post('/signin', async (req, res) => {
     let { email, password } = req.body;
     email = email?.trim() || "";
     password = password?.trim() || "";
