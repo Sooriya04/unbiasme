@@ -1,3 +1,4 @@
+// server.js
 require('./config/db');
 const express = require("express");
 const session = require("express-session");
@@ -21,41 +22,47 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static folder (if needed for CSS or JS)
+// Static folder (CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 const userRouter = require('./api/User');
 const quizRouter = require('./api/quiz');
 
-// using routes
 app.use('/user', userRouter);
 app.use('/quiz', quizRouter);
 
-// render home page
+// Home route
 app.get('/', (req, res) => {
     if (req.session.user) {
-        res.render('home', { name: req.session.user.name });
+        res.render('pages/home', { name: req.session.user.name });
     } else {
         res.redirect('/login');
     }
 });
 
-// render login page
-app.get('/login', (req, res) => res.render('login'));
+// Login page
+app.get('/login', (req, res) => res.render('pages/login'));
 
-// render signup page
-app.get('/signup', (req, res) => res.render('signup'));
+// Signup page
+app.get('/signup', (req, res) => res.render('pages/signup'));
 
-// logout
+// Logout
 app.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/login');
     });
 });
 
-// render quiz page
-app.get('/quiz', (req, res) => {res.render('quiz');});
+// Quiz page
+app.get('/quiz', (req, res) => {
+    res.render('pages/quiz');
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).send('404 Not Found');
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
