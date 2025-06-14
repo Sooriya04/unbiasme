@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
         res.redirect('/login');
     }
 });
+
 // render login page
 app.get('/login', (req, res) => res.render('login'));
 
@@ -57,5 +58,5 @@ app.get('/logout', (req, res) => {
 app.get('/quiz', (req, res) => {res.render('quiz');});
 
 app.listen(port, () => {
-    console.log(`✅ Server is running on http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });
