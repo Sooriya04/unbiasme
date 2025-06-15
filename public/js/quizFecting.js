@@ -51,7 +51,7 @@ function submitAnswer() {
     } else {
       showResult();
     }
-  }, 10000); // seconds
+  }, 1000); // seconds
 }
 function showResult() {
     document.getElementById("quiz-container").style.display = "none";

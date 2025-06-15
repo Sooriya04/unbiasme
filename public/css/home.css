@@ -1,0 +1,130 @@
+a{
+    text-decoration: none;
+}
+.col-md-5{
+    width: 100%;
+}
+.button {
+  display: inline-block;
+  padding: 12px 24px;
+  border: 1px solid #4f4f4f;
+  border-radius: 4px;
+  transition: all 0.2s ease-in;
+  position: relative;
+  overflow: hidden;
+  font-size: 19px;
+  cursor: pointer;
+  color: black;
+  z-index: 1;
+}
+
+.button:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.25);
+  top: 100%;
+  width: 140%;
+  height: 180%;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.button:after {
+  content: "";
+  position: absolute;
+  left: 55%;
+  transform: translateX(-50%) scaleY(1) scaleX(1.45);
+  top: 180%;
+  width: 160%;
+  height: 190%;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: block;
+  transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: -1;
+}
+
+.button:hover {
+  color: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+
+.button:hover:before {
+  top: -35%;
+  background-color: #e0e0e0;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+.button:hover:after {
+  top: -45%;
+  background-color: #e0e0e0;
+  transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+}
+
+.info-card {
+  background-color: #e0e0e0;
+  padding: 24px;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info-card h5 {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.info-card h5:hover,
+.info-card h5:active{
+    color: #4d4d4d;
+}
+
+.info-card p {
+  flex-grow: 1;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.info-card a { 
+    text-decoration: none;
+    color: #000;
+    transition: color 0.3s ease;
+}
+a:hover{
+    color: #000;
+}
+.hover-underline-animation {
+    display: inline-block;
+    position: relative;
+}
+
+.hover-underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 13%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #4d4d4d;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+.hover-underline-animation:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+
+@media (max-width: 576px) {
+    .col-md-5{
+        width: 100%;
+    }
+}
