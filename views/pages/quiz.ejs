@@ -11,64 +11,54 @@
 </head>
 <body>
 
-<div id="quiz-container" class="d-flex justify-content-center align-items-center text-center min-vh-100">
-    <div class="quiz-box w-100">
-      <h2 id="question-title">Your Question Appears Here</h2>
-      <form id="quiz-form">
-        <label class="radio-button">
-          <input type="radio" name="option" value="A" onchange="toggleCustom(false)">
-          <span id="labelA">Option A</span>
-          <span class="radio-button__custom"></span>
-        </label>
+<div id="quiz-container" class="quiz-container">
+  <div class="quiz-box text-center">
+    <h2 id="question-title" class="mb-4">Your Question Appears Here</h2>
+    <form id="quiz-form" class="d-flex flex-column align-items-center justify-content-center">
+      <label class="radio-button">
+        <input type="radio" name="option" value="A" onchange="toggleCustom(false)">
+        <span id="labelA">Option A</span>
+        <span class="radio-button__custom"></span>
+      </label>
 
-        <label class="radio-button">
-          <input type="radio" name="option" value="B" onchange="toggleCustom(false)">
-          <span id="labelB">Option B</span>
-          <span class="radio-button__custom"></span>
-        </label>
+      <label class="radio-button">
+        <input type="radio" name="option" value="B" onchange="toggleCustom(false)">
+        <span id="labelB">Option B</span>
+        <span class="radio-button__custom"></span>
+      </label>
 
-        <label class="radio-button">
-          <input type="radio" name="option" value="C" onchange="toggleCustom(false)">
-          <span id="labelC">Option C</span>
-          <span class="radio-button__custom"></span>
-        </label>
+      <label class="radio-button">
+        <input type="radio" name="option" value="C" onchange="toggleCustom(false)">
+        <span id="labelC">Option C</span>
+        <span class="radio-button__custom"></span>
+      </label>
 
-        <label class="radio-button">
-          <input type="radio" name="option" value="D" onchange="toggleCustom(false)">
-          <span id="labelD">Option D</span>
-          <span class="radio-button__custom"></span>
-        </label>
+      <label class="radio-button">
+        <input type="radio" name="option" value="D" onchange="toggleCustom(false)">
+        <span id="labelD">Option D</span>
+        <span class="radio-button__custom"></span>
+      </label>
 
-        <label class="radio-button">
-          <input type="radio" name="option" value="E" onchange="toggleCustom(true)">
-          <span>Other:</span>
-          <span class="radio-button__custom"></span>
-        </label>
-        <div class="form-input">
-          <input class="input" id="custom-answer" placeholder="Type your text" required="" type="text">
-          <span class="input-border"></span>
-        </div>
-        <div class="mt-4 margin">
-          <button type="button" onclick="submitAnswer()">Next</button>
-        </div>
-      </form>
-    </div>
+      <label class="radio-button">
+        <input type="radio" name="option" value="E" onchange="toggleCustom(false)">
+        <span id="labelE">Option E</span>
+        <span class="radio-button__custom"></span>
+      </label>
+      <div class="mt-4 w-100 d-flex justify-content-center">
+        <button type="button" onclick="submitAnswer()">Next</button>
+      </div>
+    </form>
   </div>
-<div id="feedback-screen"></div>
-
-<div id="result" style="display: none;">
-  <h2>Quiz Complete!</h2>
-  <p>Your Score: <span id="score"></span>/10</p>
-  <pre id="user-answers-output"></pre>
 </div>
 
 <div id="feedback-screen"></div>
 
-<div id="result" style="display: none;">
+<div id="result-screen" style="display: none; text-align: center;">
   <h2>Quiz Complete!</h2>
-  <p>Your Score: <span id="score"></span>/10</p>
-  <pre id="user-answers-output"></pre>
 </div>
+
+<div id="feedback-screen"></div>
+
 <script src="/js/quizFecting.js"></script>
 </body>
 </html>

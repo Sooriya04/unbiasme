@@ -1,20 +1,32 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-}
-
-#quiz-container {
-  height: 100vh;
+.quiz-container {
+  display: flex !important; 
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  min-height: 100vh;
 }
 
 .quiz-box {
+  width: 100%;
   max-width: 500px;
-  padding: 30px;
-  border-radius: 10px;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hidden {
+  display: none !important;
+}
+#quiz-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.radio-button {
+  width: 100%;
+  max-width: 300px;
   text-align: left;
 }
 
@@ -48,7 +60,7 @@ button{
   box-sizing: border-box;
   color: rgba(0, 0, 0, 0.85);
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   font-size: 16px;
   font-weight: 600;
   justify-content: center;
@@ -63,7 +75,7 @@ button{
   -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: baseline;
-  width: 50%;
+  width: 30%;
 }
 
 button:hover,

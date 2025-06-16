@@ -1,54 +1,51 @@
-function toggleCustom(show) {
-    document.getElementById("custom-answer").style.display = show ? "block" : "none";
-}
-
 let questions = [];
 let currentQuestion = 0;
-let score = 0;
 
-const userAnswers = {}; 
+const userAnswers = {};
+const answerScores = { A: 1, B: 2, C: 3, D: 4, E: 5 };
 
+const traitTracker = {};
+const traitScores = {}; 
 async function fetchQuestions() {
-    const res = await fetch('/quiz/questions');
-    questions = await res.json();
-    loadQuestion();
+  const res = await fetch('/quiz/questions');
+  questions = await res.json();
+  loadQuestion();
 }
 
 function loadQuestion() {
-    const q = questions[currentQuestion];
-    document.getElementById("question-title").textContent = `Q${currentQuestion + 1}: ${q.question}`;
-    document.getElementById("labelA").textContent = q.options.A;
-    document.getElementById("labelB").textContent = q.options.B;
-    document.getElementById("labelC").textContent = q.options.C;
-    document.getElementById("labelD").textContent = q.options.D;
-    document.querySelectorAll('input[name="option"]').forEach(el => el.checked = false);
-    toggleCustom(false);
-    document.getElementById("custom-answer").value = "";
-}
-
-function toggleCustom(show) {
-    document.getElementById("custom-answer").style.display = show ? "inline-block" : "none";
+  const q = questions[currentQuestion];
+  document.getElementById("question-title").textContent = `Q${currentQuestion + 1}: ${q.question}`;
+  document.getElementById("labelA").textContent = q.options.A;
+  document.getElementById("labelB").textContent = q.options.B;
+  document.getElementById("labelC").textContent = q.options.C;
+  document.getElementById("labelD").textContent = q.options.D;
+  document.getElementById("labelE").textContent = q.options.E;
+  document.querySelectorAll('input[name="option"]').forEach(el => el.checked = false);
 }
 
 function submitAnswer() {
-    const selected = document.querySelector('input[name="option"]:checked');
-    if (!selected) return alert("Please select an answer.");
-    const answerKey = selected.value;
-    const q = questions[currentQuestion];
-    let answerText = "";
-    if (answerKey === "E") {
-      const customInput = document.getElementById("custom-answer").value.trim();
-      if (!customInput) return alert("Please enter your custom answer.");
-      answerText = customInput;
-    } else {
-      answerText = q.options[answerKey];
-    }
-    const feedback = q.feedback[answerKey] || "Thanks for your answer!";
-    userAnswers[currentQuestion] = answerText;
-    document.getElementById("feedback-screen").textContent = feedback;
-    document.getElementById("feedback-screen").style.display = "flex";
-    document.getElementById("quiz-container").style.display = "none";
-    setTimeout(() => {
+  const selected = document.querySelector('input[name="option"]:checked');
+  if (!selected) return alert("Please select an answer.");
+
+  const answerKey = selected.value;
+  const q = questions[currentQuestion];
+  const answerText = q.options[answerKey];
+  const trait = q.trait;
+  const score = answerScores[answerKey];
+
+  userAnswers[q.question] = answerText;
+
+  if (!traitTracker[trait]) traitTracker[trait] = { total: 0, count: 0 };
+  traitTracker[trait].total += score;
+  traitTracker[trait].count++;
+
+
+  const feedback = q.feedback?.[answerKey] || "Answer recorded!";
+  document.getElementById("feedback-screen").textContent = feedback;
+  document.getElementById("feedback-screen").style.display = "flex";
+  document.getElementById("quiz-container").style.display = "none";
+
+  setTimeout(() => {
     document.getElementById("feedback-screen").style.display = "none";
     currentQuestion++;
     if (currentQuestion < questions.length) {
@@ -57,16 +54,33 @@ function submitAnswer() {
     } else {
       showResult();
     }
-  }, 1000); // seconds
+  }, 1000);
 }
+
 function showResult() {
-    document.getElementById("quiz-container").style.display = "none";
-    document.getElementById("score").textContent = score;
-    document.getElementById("result").style.display = "block";
-    let output = "";
-    questions.forEach((q, i) => {
-      output += `Q${i + 1}: ${userAnswers[i] || "Not Answered"}\n`;
-    });
-    document.getElementById("user-answers-output").textContent = output;
+  // Calculate trait percentages
+  for (const trait in traitTracker) {
+    const { total, count } = traitTracker[trait];
+    traitScores[trait] = parseFloat(((total / (count * 5)) * 100).toFixed(1));
+  }
+
+  // Display only the result screen
+  document.getElementById("quiz-container")?.classList.add("hidden");
+  document.getElementById("feedback-screen")?.classList.add("hidden");
+
+  const resultScreen = document.getElementById("result-screen");
+  resultScreen.style.display = "block";
+
+  const scoreText = Object.values(traitScores).join(" | ");
+  document.getElementById("score").textContent = `Your Score: ${scoreText}`;
+
+  let output = "";
+  questions.forEach((q, i) => {
+    output += `Q${i + 1}: ${userAnswers[q.question] || "Not Answered"}\n`;
+  });
+  document.getElementById("user-answers-output").textContent = output;
+
+  console.log("Final traitScores:", traitScores); 
 }
-fetchQuestions();
+
+fetchQuestions()
