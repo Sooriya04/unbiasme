@@ -1,0 +1,68 @@
+.logo {
+  font-size: 2rem;
+  color: #070707;
+  text-decoration: none;
+}
+.hamburger {
+  cursor: pointer;
+  z-index: 1001;
+}
+.hamburger svg {
+  transition: transform 0.4s ease;
+}
+.hamburger.active svg {
+  transform: rotate(90deg);
+}
+.hamburger path {
+  transition: transform 0.4s ease, stroke-dasharray 0.4s ease, stroke-dashoffset 0.4s ease;
+}
+.hamburger path:nth-child(1) { transform-origin: 36% 40%; }
+.hamburger path:nth-child(2) { stroke-dasharray: 29 299; }
+.hamburger path:nth-child(3) { transform-origin: 35% 63%; }
+.hamburger path:nth-child(4) { stroke-dasharray: 29 299; }
+.hamburger path:nth-child(5) { transform-origin: 61% 52%; }
+.hamburger path:nth-child(6) { transform-origin: 62% 52%; }
+.hamburger.active path:nth-child(1) {
+  transform: translateX(9px) translateY(1px) rotate(45deg);
+}
+.hamburger.active path:nth-child(2),
+.hamburger.active path:nth-child(4) {
+  stroke-dasharray: 225 299;
+  stroke-dashoffset: -72px;
+}
+.hamburger.active path:nth-child(3) {
+  transform: translateX(9px) translateY(1px) rotate(-45deg);
+}
+.hamburger.active path:nth-child(5) {
+  transform: translateX(9px) translateY(1px) rotate(-45deg);
+}
+.hamburger.active path:nth-child(6) {
+  transform: translateX(9px) translateY(1px) rotate(45deg);
+}
+
+/* Fullscreen Sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: #fff;
+  color: white;
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.sidebar-overlay.show {
+  display: flex;
+}
+.sidebar-menu a {
+  font-size: 2rem;
+  color: #000;
+  text-decoration: none;
+  margin: 10px 0;
+}
+.sidebar-menu a:hover {
+  text-decoration: underline;
+}

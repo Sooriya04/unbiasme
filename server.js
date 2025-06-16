@@ -1,69 +1,86 @@
 // server.js
-require('./config/db');
-const express = require("express");
-const session = require("express-session");
-const path = require("path");
+require('dotenv').config();        // Load .env variables (e.g., GEMINI_API_KEY)
+require('./config/db');            // MongoDB connection
 
-const app = express();
-const port = 3000;
+const express  = require('express');
+const session  = require('express-session');
+const path     = require('path');
 
-// Middlewares
+const app  = express();
+const port = process.env.PORT || 3000;
+
+/* -----------------------  MIDDLEWARES  ----------------------- */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session setup
-app.use(session({
-    secret: 'yourSecretKey',
+// Sessions
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'yourSecretKey',
     resave: false,
-    saveUninitialized: false
-}));
+    saveUninitialized: false,
+  })
+);
+
+// Make session name available to every EJS view
+app.use((req, res, next) => {
+  res.locals.name = req.session.user?.name;   // <%= name %> in EJS
+  next();
+});
 
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static folder (CSS, JS)
+// Static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
-const userRouter = require('./api/User');
-const quizRouter = require('./api/quiz');
+/* -----------------------  ROUTES  ----------------------- */
+const userRouter     = require('./api/User');       // Auth, signup, login
+const questionsRouter= require('./api/questions');  // Quiz questions
+
 
 app.use('/user', userRouter);
-app.use('/quiz', quizRouter);
+app.use('/quiz', questionsRouter);
 
-// Home route
+/* -------------  PAGE ROUTES --------------- */
+
+// Home
 app.get('/', (req, res) => {
-    if (req.session.user) {
-        res.render('pages/home', { name: req.session.user.name });
-    } else {
-        res.redirect('/login');
-    }
+    res.render('pages/home');        
 });
 
-// Login page
-app.get('/login', (req, res) => res.render('pages/login'));
 
-// Signup page
+app.get('/login',  (req, res) => res.render('pages/login'));
 app.get('/signup', (req, res) => res.render('pages/signup'));
 
 // Logout
 app.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/login');
-    });
+  req.session.destroy(() => res.redirect('/login'));
 });
 
-// Quiz page
+// Quiz page 
 app.get('/quiz', (req, res) => {
+  if (req.session.user) {
     res.render('pages/quiz');
+  } else {
+    res.redirect('/login');
+  }
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).send('404 Not Found');
+// Dashboard page
+app.get('/dashboard', (req, res) => {
+  if (req.session.user) {
+    res.render('pages/dashboard');
+  } else {
+    res.redirect('/login');
+  }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// 404 page
+app.use((req, res) => res.status(404).send('404 Not Found'));
+
+// Starting 
+app.listen(port, () =>
+  console.log(`Server running on http://localhost:${port}`)
+);
