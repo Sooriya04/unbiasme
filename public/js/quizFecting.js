@@ -5,6 +5,7 @@ const userAnswers = {};
 const answerScores = { A: 1, B: 2, C: 3, D: 4, E: 5 };
 
 const traitTracker = {};
+
 const traitScores = {}; 
 async function fetchQuestions() {
   const res = await fetch('/quiz/questions');
