@@ -56,7 +56,6 @@ function submitAnswer() {
     }
   }, 1000);
 }
-
 function showResult() {
   // Calculate trait percentages
   for (const trait in traitTracker) {
@@ -64,14 +63,16 @@ function showResult() {
     traitScores[trait] = parseFloat(((total / (count * 5)) * 100).toFixed(1));
   }
 
-  // Display only the result screen
+  // Display result screen
   document.getElementById("quiz-container")?.classList.add("hidden");
   document.getElementById("feedback-screen")?.classList.add("hidden");
 
   const resultScreen = document.getElementById("result-screen");
   resultScreen.style.display = "block";
 
-  const scoreText = Object.values(traitScores).join(" | ");
+  const scoreText = Object.entries(traitScores)
+    .map(([trait, score]) => `${trait}: ${score}%`)
+    .join(" | ");
   document.getElementById("score").textContent = `Your Score: ${scoreText}`;
 
   let output = "";
@@ -80,7 +81,20 @@ function showResult() {
   });
   document.getElementById("user-answers-output").textContent = output;
 
-  console.log("Final traitScores:", traitScores); 
+  console.log("Final traitScores:", traitScores);
+
+  // Send traitScores to server
+  fetch('/quiz/submit-scores', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ traitScores })
+  })
+  .then(res => res.json())
+  .then(data => console.log("Saved to DB:", data))
+  .catch(err => console.error("Save error:", err));
 }
+
 
 fetchQuestions()

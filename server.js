@@ -1,17 +1,21 @@
-require('dotenv').config();        
-require('./config/db');          
+require('dotenv').config();
+require('./config/db');
+
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
 
-const app  = express();
+const app = express();
 const port = process.env.PORT || 3000;
 
-/* -----------------------  middlewares  ----------------------- */
+// MongoDB User model
+const User = require('./models/user'); // ✅ make sure path is correct
+
+/* -------------------- Middlewares -------------------- */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Sessions
+// Session setup
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'yourSecretKey',
@@ -20,37 +24,38 @@ app.use(
   })
 );
 
+// Make user name available in EJS templates
 app.use((req, res, next) => {
-  res.locals.name = req.session.user?.name;  
+  res.locals.name = req.session.user?.name || null;
   next();
 });
 
-// View engine
+// Set up view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static files (CSS, JS, images)
+// Serve static assets
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* -----------------------  routes  ----------------------- */
-const userRouter     = require('./api/User');      
-const questionsRouter= require('./api/questions');
+/* -------------------- Routers -------------------- */
+const userRouter = require('./api/User');
+const questionsRouter = require('./api/questions');
 
 app.use('/user', userRouter);
 app.use('/quiz', questionsRouter);
 
-/* -------------  page routing --------------- */
+/* -------------------- Page Routes -------------------- */
 
 // Home
 app.get('/', (req, res) => {
-    res.render('pages/home');        
+  res.render('pages/home');
 });
 
-
-app.get('/login',  (req, res) => res.render('pages/login'));
+// Auth pages
+app.get('/login', (req, res) => res.render('pages/login'));
 app.get('/signup', (req, res) => res.render('pages/signup'));
 
-//content
+// Static content
 app.get('/how-the-unbiasme-quiz-works', (req, res) => res.render('content/unbiase'));
 app.get('/what-are-cognitive-biases', (req, res) => res.render('content/bias'));
 app.get('/how-are-personality-and-bias-linked', (req, res) => res.render('content/link'));
@@ -61,28 +66,67 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
-// Quiz page 
+// Quiz page
 app.get('/quiz', (req, res) => {
   if (req.session.user) {
-    res.render('pages/quiz');
+    const username = req.session.user.name;
+    res.render('pages/quiz', { username });
   } else {
     res.redirect('/login');
+  }
+});
+
+// ✅ Save trait scores from client
+app.post('/quiz/submit-scores', async (req, res) => {
+  const { traitScores } = req.body;
+  const username = req.session.user?.name;
+
+  if (!username) {
+    return res.status(401).json({ error: 'User not logged in' });
+  }
+
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { name: username },
+      { $set: { traitScores } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'Trait scores saved successfully', user: updatedUser });
+  } catch (err) {
+    console.error('Error saving trait scores:', err);
+    res.status(500).json({ error: 'Failed to save scores' });
   }
 });
 
 // Dashboard page
-app.get('/dashboard', (req, res) => {
-  if (req.session.user) {
-    res.render('pages/dashboard');
-  } else {
-    res.redirect('/login');
+app.get('/dashboard', async (req, res) => {
+  const username = req.session.user?.name;
+
+  if (!username) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const user = await User.findOne({ name: username });
+    res.render('pages/dashboard', {
+      username,
+      traitScores: user?.traitScores || {}
+    });
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    res.status(500).send('Error loading dashboard');
   }
 });
 
-// 404 page
+// 404 fallback
 app.use((req, res) => res.status(404).send('404 Not Found'));
 
-// Starting 
+// Start the server
 app.listen(port, () =>
   console.log(`Server running on http://localhost:${port}`)
 );
