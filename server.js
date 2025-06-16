@@ -1,15 +1,13 @@
-// server.js
-require('dotenv').config();        // Load .env variables (e.g., GEMINI_API_KEY)
-require('./config/db');            // MongoDB connection
-
-const express  = require('express');
-const session  = require('express-session');
-const path     = require('path');
+require('dotenv').config();        
+require('./config/db');          
+const express = require('express');
+const session = require('express-session');
+const path = require('path');
 
 const app  = express();
 const port = process.env.PORT || 3000;
 
-/* -----------------------  MIDDLEWARES  ----------------------- */
+/* -----------------------  middlewares  ----------------------- */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -22,9 +20,8 @@ app.use(
   })
 );
 
-// Make session name available to every EJS view
 app.use((req, res, next) => {
-  res.locals.name = req.session.user?.name;   // <%= name %> in EJS
+  res.locals.name = req.session.user?.name;  
   next();
 });
 
@@ -35,15 +32,14 @@ app.set('views', path.join(__dirname, 'views'));
 // Static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* -----------------------  ROUTES  ----------------------- */
-const userRouter     = require('./api/User');       // Auth, signup, login
-const questionsRouter= require('./api/questions');  // Quiz questions
-
+/* -----------------------  routes  ----------------------- */
+const userRouter     = require('./api/User');      
+const questionsRouter= require('./api/questions');
 
 app.use('/user', userRouter);
 app.use('/quiz', questionsRouter);
 
-/* -------------  PAGE ROUTES --------------- */
+/* -------------  page routing --------------- */
 
 // Home
 app.get('/', (req, res) => {
@@ -53,6 +49,12 @@ app.get('/', (req, res) => {
 
 app.get('/login',  (req, res) => res.render('pages/login'));
 app.get('/signup', (req, res) => res.render('pages/signup'));
+
+//content
+app.get('/how-the-unbiasme-quiz-works', (req, res) => res.render('content/unbiase'));
+app.get('/what-are-cognitive-biases', (req, res) => res.render('content/bias'));
+app.get('/how-are-personality-and-bias-linked', (req, res) => res.render('content/link'));
+app.get('/what-are-personality-traits', (req, res) => res.render('content/traits'));
 
 // Logout
 app.get('/logout', (req, res) => {

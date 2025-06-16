@@ -1,15 +1,19 @@
 function toggleCustom(show) {
     document.getElementById("custom-answer").style.display = show ? "block" : "none";
 }
+
 let questions = [];
 let currentQuestion = 0;
 let score = 0;
-const userAnswers = {};
+
+const userAnswers = {}; 
+
 async function fetchQuestions() {
     const res = await fetch('/quiz/questions');
     questions = await res.json();
     loadQuestion();
 }
+
 function loadQuestion() {
     const q = questions[currentQuestion];
     document.getElementById("question-title").textContent = `Q${currentQuestion + 1}: ${q.question}`;
@@ -21,9 +25,11 @@ function loadQuestion() {
     toggleCustom(false);
     document.getElementById("custom-answer").value = "";
 }
+
 function toggleCustom(show) {
     document.getElementById("custom-answer").style.display = show ? "inline-block" : "none";
 }
+
 function submitAnswer() {
     const selected = document.querySelector('input[name="option"]:checked');
     if (!selected) return alert("Please select an answer.");
