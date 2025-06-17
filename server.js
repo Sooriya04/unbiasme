@@ -5,11 +5,15 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 
+// server
 const app = express();
 const port = process.env.PORT || 3000;
 
 // MongoDB User model
 const User = require("./models/user");
+
+// MongoDB userverfication model
+const userVerification = require("./models/userVerification");
 
 /* -------------------- Middlewares -------------------- */
 app.use(express.urlencoded({ extended: true }));
@@ -38,7 +42,6 @@ const questionsRouter = require("./api/questions");
 
 app.use("/user", userRouter);
 app.use("/quiz", questionsRouter);
-
 /* -------------------- Page Routes -------------------- */
 
 // Home
@@ -77,7 +80,7 @@ app.get("/quiz", (req, res) => {
   }
 });
 
-// ✅ Save trait scores from client
+// Save trait scores from client
 app.post("/quiz/submit-scores", async (req, res) => {
   const { traitScores } = req.body;
   const username = req.session.user?.name;
@@ -106,17 +109,17 @@ app.post("/quiz/submit-scores", async (req, res) => {
 
 // Dashboard page
 app.get("/dashboard", async (req, res) => {
-  const username = req.session.user?.name;
+  const email = req.session.user?.email;
 
-  if (!username) {
+  if (!email) {
     return res.redirect("/login");
   }
 
   try {
-    const user = await User.findOne({ name: username });
+    const user = await User.findOne({ email }); // ✅ use email instead of name
     res.render("pages/dashboard", {
-      username,
-      traitScores: user?.traitScores || {},
+      username: user?.name || "User", // display username in UI
+      traitScores: user?.traitScores || {}, // scores stored in DB
     });
   } catch (err) {
     console.error("Dashboard error:", err);
