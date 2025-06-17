@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/navbar.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+  </head>
+  <body>
     <header>
       <nav class="nav">
         <a href="/" class="logo">UnbiasMe</a>
@@ -59,14 +59,16 @@
           <a href="#" class="hover-underline-animations left">About Us</a>
           <a href="#" class="hover-underline-animations left">Contact Us</a>
 
-          <% if (typeof name !== 'undefined') { %>
-            <a href="/dashboard" class="hover-underline-animations left">Your Account</a>
+          <% if (name) { %>
+          <a href="/dashboard" class="hover-underline-animations left"
+            >Your Account</a
+          >
           <% } else { %>
-            <a href="/login" class="hover-underline-animations left">Login</a>
+          <a href="/login" class="hover-underline-animations left">Login</a>
           <% } %>
         </div>
       </nav>
     </header>
     <script src="/js/navbar.js"></script>
-</body>
+  </body>
 </html>
