@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.AUTH_PASS,
   },
 });
-
+// verifying
 transporter.verify((error, success) => {
   if (error) {
     console.log("Nodemailer Error:", error);
@@ -27,6 +27,7 @@ transporter.verify((error, success) => {
   }
 });
 
+// sending email
 const sendVerificationEmail = ({ _id, email }, res) => {
   const currentUrl = "http://localhost:3000/";
   const uniqueString = uuidv4() + _id;
@@ -68,7 +69,7 @@ const sendVerificationEmail = ({ _id, email }, res) => {
       });
   });
 };
-
+// --------------------------------- Verification Successful Routes ----------------------------------------
 router.get("/verify/:userId/:uniqueString", (req, res) => {
   const { userId, uniqueString } = req.params;
 
@@ -113,11 +114,11 @@ router.get("/verify/:userId/:uniqueString", (req, res) => {
     }
   });
 });
-
+// rendering verification page
 router.get("/verified", (req, res) => {
   res.render("../views/pages/verification");
 });
-
+// --------------------------------- Sign Up ----------------------------------------
 router.post("/signup", (req, res) => {
   let name, email, password;
 
@@ -168,6 +169,7 @@ router.post("/signup", (req, res) => {
   });
 });
 
+// --------------------------------- Sign In ----------------------------------------
 router.post("/signin", (req, res) => {
   let { email, password } = req.body;
   email = email?.trim();
