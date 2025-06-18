@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
 
-const userVerification = new mongoose.Schema({
-  userId: String,
+const userVerificationSchema = new mongoose.Schema({
+  userId: mongoose.Schema.Types.ObjectId,
   uniqueString: String,
-  createAt: Date,
-  expireAt: Date,
+  createdAt: Date,
+  expireAt: {
+    type: Date,
+    expires: 0,
+  },
 });
 
-module.exports = mongoose.model("userVerification", userVerification);
+module.exports = mongoose.model("UserVerification", userVerificationSchema);

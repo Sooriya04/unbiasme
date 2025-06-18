@@ -190,7 +190,7 @@ app.get("/profile", async (req, res) => {
   if (!email) return res.redirect("/login");
 
   const user = await User.findOne({ email });
-  res.render("content/profile", { user });
+  res.render("pages/profile", { user });
 });
 
 // profile post request(editing)

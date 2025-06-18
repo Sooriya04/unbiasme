@@ -9,6 +9,14 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/navbar.css" />
+    <style>
+      h2:hover {
+        color: #6c757d;
+      }
+      a {
+        color: #6c757d;
+      }
+    </style>
   </head>
   <body>
     <%- include('../partials/navbar') %>
@@ -26,7 +34,7 @@
               errors in reasoning and behavior
             </p>
             <hr />
-            <h2>For example:</h2>
+            <h4>For example:</h4>
             <ul>
               <li>
                 Individuals high in Neuroticism tend to exhibit loss aversion
@@ -52,7 +60,7 @@
                 susceptibility.
               </p>
             </blockquote>
-            <h3 id="example-real">🧪 Real-Life Examples of Cognitive Biases</h3>
+            <h2 id="example-real">🧪 Real-Life Examples of Cognitive Biases</h2>
             <ol>
               <li>Anchoring Bias:</li>
               <p>
@@ -260,7 +268,14 @@
             </p>
           </article>
 
-          <nav class="blog-pagination" aria-label="Pagination"></nav>
+          <div class="container py-4">
+            <a
+              href="/"
+              class="text-decoration-none text-muted mb-3 d-inline-block"
+            >
+              ← Back to Homepage
+            </a>
+          </div>
         </div>
 
         <div class="col-md-4">
