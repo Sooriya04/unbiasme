@@ -1,5 +1,3 @@
-// routes/user.js
-
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
@@ -28,16 +26,15 @@ transporter.verify((error, success) => {
 });
 
 // sending email
-const sendVerificationEmail = ({ _id, email }, res) => {
+const sendVerificationEmail = ({ _id, name, email }, res) => {
   const currentUrl = "http://localhost:3000/";
   const uniqueString = uuidv4() + _id;
-
   bcrypt.hash(uniqueString, 10).then((hashedUniqueString) => {
     const newVerification = new userVerification({
       userId: _id,
       uniqueString: hashedUniqueString,
       createdAt: Date.now(),
-      expireAt: Date.now() + 21600000, // 6 hours
+      expireAt: Date.now() + 21600,
     });
 
     newVerification
@@ -47,10 +44,49 @@ const sendVerificationEmail = ({ _id, email }, res) => {
           from: process.env.AUTH_EMAIL,
           to: email,
           subject: "Verify your email",
+          // Email to user for verification
           html: `
-            <p>Verify your email to complete signup.</p>
-            <p>This link <b>expires in 6 hours</b>.</p>
-            <p>Click <a href="${currentUrl}user/verify/${_id}/${uniqueString}">here</a> to verify.</p>
+            <div
+              style="
+                max-width: 500px;
+                margin: 30px auto;
+                padding: 30px;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                font-family: Arial, sans-serif;
+                text-align: center;
+              "
+            >
+              <h2 style="color: #111; margin-bottom: 20px">Hello, ${name}</h2>
+              <p style="color: #111; margin-bottom: 20px">Confirm your account</>
+              <p style="color: #333; font-size: 15px; line-height: 1.5">
+                Please click the button below to confirm your email address and finish
+                setting up your account.<br />
+                <b>This link is valid for 6 hours.</b>
+              </p>
+              <a
+                href="${currentUrl}user/verify/${_id}/${uniqueString}"
+                style="
+                  display: inline-block;
+                  outline: none;
+                  cursor: pointer;
+                  font-size: 16px;
+                  line-height: 20px;
+                  font-weight: 600;
+                  border-radius: 8px;
+                  padding: 13px 23px;
+                  border: 1px solid #222222;
+                  background: #ffffff;
+                  color: #222222;
+                  text-decoration: none;
+                "
+              >
+                Confirm
+              </a>
+
+              <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd" />
+              <p style="color: #666; font-size: 13px">UnbiasMe</p>
+            </div>
           `,
         };
 
@@ -61,11 +97,21 @@ const sendVerificationEmail = ({ _id, email }, res) => {
             //res.json({ status: "Pending", message: "Verification email sent" });
           })
           .catch((err) => {
-            res.json({ status: "Failed", message: "Failed to send email" });
+            console.log(`ERROR : ${err}`);
+            res.status(500).render("error/error", {
+              code: 500,
+              message: "Failed to send email",
+            });
+            //res.json({ status: "Failed", message: "Failed to send email" });
           });
       })
       .catch((err) => {
-        res.json({ status: "Failed", message: "Database error" });
+        console.log(`ERROR : ${err}`);
+        res.status(500).render("error/error", {
+          code: 500,
+          message: "Database error",
+        });
+        //res.status(500).json({ status: "Failed", message: "Database error" });
       });
   });
 };
@@ -127,31 +173,41 @@ router.post("/signup", (req, res) => {
     email = req.body.email;
     password = req.body.password;
   } else {
-    return res.status(400).json({
-      status: "Failed",
+    //res.status(500).json({ status: "Failed", message: "Database error" });
+    res.status(500).render("error/error", {
+      code: 500,
       message: "No body found in request",
     });
+    // return res.status(400).json({
+    //   status: "Failed",
+    //   message: "No body found in request",
+    // });
   }
 
   if (!name || !email || !password) {
-    return res.json({ status: "Failed", message: "Invalid input" });
+    return res.render("pages/signup", { error: "Invalid input" });
+    //res.status(400).json({ status: "Failed", message: "Invalid input" });
   }
 
   if (!/^[a-zA-Z ]*$/.test(name)) {
-    return res.json({ status: "Failed", message: "Invalid name" });
+    return res.render("pages/signup", { error: "Invalid input" });
+    //res.status(400).json({ status: "Failed", message: "Invalid name" });
   }
 
   if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-    return res.json({ status: "Failed", message: "Invalid email" });
+    return res.render("pages/signup", { error: "Invalid email" });
+    //res.status(400).json({ status: "Failed", message: "Invalid email" });
   }
 
   if (password.length < 8) {
-    return res.json({ status: "Failed", message: "Password too short" });
+    return res.render("pages/signup", { error: "Password too short" });
+    //res.status(400).json({ status: "Failed", message: "Password too short" });
   }
 
   User.find({ email }).then((result) => {
     if (result.length) {
-      return res.json({ status: "Failed", message: "Email already exists" });
+      return res.render("pages/signup", { error: "Email already exists" });
+      //return res.json({ status: "Failed", message: "Email already exists" });
     } else {
       bcrypt.hash(password, 10).then((hashedPassword) => {
         const newUser = new User({
@@ -176,18 +232,24 @@ router.post("/signin", (req, res) => {
   password = password?.trim();
 
   if (!email || !password) {
-    return res.json({ status: "Failed", message: "Missing credentials" });
+    res.render("pages/login", { error: "Missing credentials" });
+    //return res.json({ status: "Failed", message: "Missing credentials" });
   }
 
   User.find({ email }).then((data) => {
     if (data.length === 0) {
-      return res.json({ status: "Failed", message: "User not found" });
+      res.status(500).json({ status: "Failed", message: "User not found" });
+      //return res.json({ status: "Failed", message: "User not found" });
     }
 
     const user = data[0];
 
     if (!user.verified) {
-      return res.json({ status: "Failed", message: "Email not verified" });
+      res.status(500).render("error/error", {
+        code: 500,
+        message: "Email not verified",
+      });
+      //return res.json({ status: "Failed", message: "Email not verified" });
     }
 
     bcrypt.compare(password, user.password).then((match) => {
@@ -198,7 +260,8 @@ router.post("/signin", (req, res) => {
         };
         res.redirect("/");
       } else {
-        res.json({ status: "Failed", message: "Incorrect password" });
+        res.render("pages/login", { error: "Incorrect password" });
+        //res.json({ status: "Failed", message: "Incorrect password" });
       }
     });
   });

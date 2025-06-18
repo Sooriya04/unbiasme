@@ -88,3 +88,11 @@
   text-decoration: none;
   border-radius: 8px;
 }
+.progress {
+  height: 20px;
+  border-radius: 10px;
+}
+.progress-bar {
+  border-radius: 10px;
+  font-weight: bold;
+}

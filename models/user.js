@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
     type: Object,
     default: {},
   },
+  gender: String,
+  dob: Date,
+  age: Number,
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -1,86 +1,96 @@
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: #f8f9fa;
-    color: #000000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f8f9fa;
+  color: #000000;
+}
+.alert-popup {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  width: 90%;
+  max-width: 500px;
+  display: none;
 }
 .login-container {
-    max-width: 500px;
-    margin: 80px auto;
-    padding: 30px;
+  max-width: 500px;
+  margin: 80px auto;
+  padding: 30px;
 }
 .form-input-group {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .form-input-group:focus {
-    outline: 0;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  outline: 0;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 .form-label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
-.btn-property{
-    display: inline-block;
-    font-weight: 400;
-    color: #fff;
-    text-align: center;
-    user-select: none;
-    background-color: #4d4d4d; 
-    padding: 0.5rem 1rem;
-    font-size: 1.25rem;
-    line-height: 1.5;
-    border-radius: 0.3rem;
-    transition: all 0.15s ease-in-out;
-    width: 50%;
-    cursor: pointer;
-    border: none;
+.btn-property {
+  display: inline-block;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  user-select: none;
+  background-color: #4d4d4d;
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: 0.3rem;
+  transition: all 0.15s ease-in-out;
+  width: 50%;
+  cursor: pointer;
+  border: none;
 }
 .btn-property:hover,
-.btn-property:active{
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+.btn-property:active {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
-p{
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    color: #000000;
+p {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
 }
-a { 
-    text-decoration: none;
-    color: #000;
-    transition: color 0.3s ease;
+a {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
 }
-a:hover{
-    color: #000;
+a:hover {
+  color: #000;
 }
 .hover-underline-animation {
-    display: inline-block;
-    position: relative;
+  display: inline-block;
+  position: relative;
 }
 
 .hover-underline-animation::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    transform: scaleX(0);
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: #4d4d4d;
-    transform-origin: bottom right;
-    transition: transform 0.25s ease-out;
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #4d4d4d;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
 }
 
 .hover-underline-animation:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }

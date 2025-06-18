@@ -46,6 +46,7 @@
       <div class="sidebar-menu text-center">
         <a href="/" class="d-block py-2">Home</a>
         <a href="/quiz" class="d-block py-2">Take Quiz</a>
+        <a href="/profile" class="d-block py-2">Profile</a>
         <a href="/logout" class="d-block py-2">Logout</a>
       </div>
     </div>
@@ -53,20 +54,28 @@
     <div class="container mt-4">
       <h2>Welcome, <%= username %></h2>
 
-      <% if (Object.keys(traitScores).length === 0) { %>
+      <% if (user && (!user.age || !user.dob || !user.gender)) { %>
+      <div class="alert alert-warning mt-3">
+        Please take a minute to
+        <a href="/profile">complete your profile</a> (age, date of birth,
+        gender).
+      </div>
+      <% } %> <% if (Object.keys(traitScores).length === 0) { %>
       <p>You haven't taken the quiz yet.</p>
-      <a href="/quiz" class="btn">Take me to the quiz</a>
+      <a href="/quiz" class="btn btn-primary">Take me to the quiz</a>
       <% } else { %>
-      <ul>
-        <h3>Your Trait Scores:</h3>
+      <div class="mt-3">
+        <h4>Your Trait Scores:</h4>
         <% for (let trait in traitScores) { %>
-        <li><%= trait %>: <%= traitScores[trait] %>%</li>
+        <div><strong><%= trait %></strong>: <%= traitScores[trait] %>%</div>
         <% } %>
-      </ul>
+      </div>
       <% } %>
+
       <br />
       <a href="/logout">Logout</a>
     </div>
+
     <script src="/js/dashboard.js"></script>
   </body>
 </html>

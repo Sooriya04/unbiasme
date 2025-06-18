@@ -1,0 +1,35 @@
+body {
+  background-color: #f4f6f8;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e0e0e0;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.form-control:disabled {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+.change-link {
+  color: #00bfa6;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+a[href="/dashboard"] {
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+a[href="/dashboard"]:hover {
+  color: #007bff;
+}

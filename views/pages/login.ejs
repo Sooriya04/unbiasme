@@ -11,6 +11,17 @@
     <title>Login</title>
   </head>
   <body>
+    <!-- error box -->
+    <% if (typeof error !== "undefined" && error) { %>
+    <div
+      id="errorAlert"
+      class="alert alert-danger alert-dismissible fade show alert-popup"
+      role="alert"
+    >
+      <%= error %>
+      <button type="button" class="btn-close" onclick="hideAlert()"></button>
+    </div>
+    <% } %>
     <main class="login-container">
       <h2 class="text-center mb-4">Welcome Back</h2>
       <p class="text-center mb-4">Please enter your details to login.</p>
@@ -45,6 +56,20 @@
         </div>
       </form>
     </main>
-    <script src="login.js"></script>
+    <script>
+      function hideAlert() {
+        const alertBox = document.getElementById("errorAlert");
+        if (alertBox) {
+          alertBox.style.display = "none";
+        }
+      }
+      window.onload = function () {
+        const alertBox = document.getElementById("errorAlert");
+        if (alertBox) {
+          alertBox.style.display = "block";
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

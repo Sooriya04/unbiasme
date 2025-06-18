@@ -83,52 +83,148 @@ app.get("/quiz", (req, res) => {
 // Save trait scores from client
 app.post("/quiz/submit-scores", async (req, res) => {
   const { traitScores } = req.body;
-  const username = req.session.user?.name;
+  const userEmail = req.session.user?.email;
 
-  if (!username) {
-    return res.status(401).json({ error: "User not logged in" });
+  if (!userEmail) {
+    res.status(401).render("error/error", {
+      code: 401,
+      message: "User not logged in",
+    });
+    //return res.status(401).json({ error: "User not logged in" });
   }
 
   try {
     const updatedUser = await User.findOneAndUpdate(
-      { name: username },
+      { email: userEmail },
       { $set: { traitScores } },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
+      res.status(404).render("error/error", {
+        code: 404,
+        message: "User not found",
+      });
+      //return res.status(404).json({ error: "User not found" });
     }
 
     res.json({ message: "Trait scores saved successfully", user: updatedUser });
   } catch (err) {
     console.error("Error saving trait scores:", err);
-    res.status(500).json({ error: "Failed to save scores" });
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Failed to save scores",
+    });
+    //res.status(500).json({ error: "Failed to save scores" });
   }
 });
 
-// Dashboard page
+// GET dashboard route
 app.get("/dashboard", async (req, res) => {
-  const email = req.session.user?.email;
+  const userEmail = req.session.user?.email;
 
-  if (!email) {
-    return res.redirect("/login");
-  }
+  if (!userEmail) return res.redirect("/login");
 
   try {
-    const user = await User.findOne({ email }); // ✅ use email instead of name
+    const user = await User.findOne({ email: userEmail });
+    if (!user) return res.redirect("/login");
+
     res.render("pages/dashboard", {
-      username: user?.name || "User", // display username in UI
-      traitScores: user?.traitScores || {}, // scores stored in DB
+      username: user.name || "User",
+      traitScores: user.traitScores || {},
+      user,
     });
   } catch (err) {
     console.error("Dashboard error:", err);
-    res.status(500).send("Error loading dashboard");
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Error loading dashboard",
+    });
+    //res.status(500).send("Error loading dashboard");
+  }
+});
+
+// POST /quiz/submit-scores route
+app.post("/quiz/submit-scores", async (req, res) => {
+  const { traitScores } = req.body;
+  const userEmail = req.session.user?.email;
+
+  if (!userEmail) {
+    res.status(401).render("error/error", {
+      code: 401,
+      message: "User not logged in",
+    });
+    //return res.status(401).json({ error: "User not logged in" });
+  }
+
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { email: userEmail },
+      { $set: { traitScores } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      res.status(404).render("error/error", {
+        code: 404,
+        message: "User not found",
+      });
+      //res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "Trait scores saved successfully", user: updatedUser });
+  } catch (err) {
+    console.error("Error saving trait scores:", err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Failed to save scores",
+    });
+    //res.status(500).json({ error: "Failed to save scores" });
+  }
+});
+
+//profile page
+app.get("/profile", async (req, res) => {
+  const email = req.session.user?.email;
+
+  if (!email) return res.redirect("/login");
+
+  const user = await User.findOne({ email });
+  res.render("content/profile", { user });
+});
+
+// profile post request(editing)
+app.post("/profile/update", async (req, res) => {
+  const { name, gender, dob, age } = req.body;
+  const email = req.session.user?.email;
+
+  if (!email) {
+    res.status(401).render("error/error", {
+      code: 401,
+      message: "Unauthorized",
+    });
+    //return res.status(401).send("Unauthorized");
+  }
+
+  try {
+    await User.updateOne({ email }, { name, gender, dob, age });
+    res.redirect("/profile");
+  } catch (err) {
+    console.error(err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Failed to update profile",
+    });
+    //res.status(500).send("Failed to update profile");
   }
 });
 
 // 404 fallback
-app.use((req, res) => res.status(404).send("404 Not Found"));
+app.use((req, res) => {
+  res.status(404).render("error/error", {
+    message: "The page you’re looking for doesn’t exist.",
+  });
+});
 
 // Start the server
 app.listen(port, () =>

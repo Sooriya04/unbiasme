@@ -1,8 +1,8 @@
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }
-.col-md-5{
-    width: 100%;
+.col-md-5 {
+  width: 100%;
 }
 .button {
   display: inline-block;
@@ -81,8 +81,8 @@ a{
   margin-bottom: 12px;
 }
 .info-card h5:hover,
-.info-card h5:active{
-    color: #4d4d4d;
+.info-card h5:active {
+  color: #4d4d4d;
 }
 
 .info-card p {
@@ -91,40 +91,97 @@ a{
   font-size: 15px;
 }
 
-.info-card a { 
-    text-decoration: none;
-    color: #000;
-    transition: color 0.3s ease;
+.info-card a {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
 }
-a:hover{
-    color: #000;
+a:hover {
+  color: #000;
 }
 .hover-underline-animation {
-    display: inline-block;
-    position: relative;
+  display: inline-block;
+  position: relative;
 }
 
 .hover-underline-animation::after {
-    content: '';
-    position: absolute;
-    width: 13%;
-    transform: scaleX(0);
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: #4d4d4d;
-    transform-origin: bottom right;
-    transition: transform 0.25s ease-out;
+  content: "";
+  position: absolute;
+  width: 13%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #4d4d4d;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
 }
 
 .hover-underline-animation:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
-
 @media (max-width: 576px) {
-    .col-md-5{
-        width: 100%;
-    }
+  .col-md-5 {
+    width: 100%;
+  }
+}
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: max-content;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.split-text-container {
+  display: flex;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #4f4f4f;
+  overflow: hidden;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.text-part {
+  display: inline-block;
+  position: relative;
+  transform: translateX(0);
+  animation-duration: 2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  padding: 0 0.5rem;
+}
+
+.text-part.left {
+  transform: translateX(-200%);
+  animation-name: slide-in-left;
+}
+
+.text-part.right {
+  transform: translateX(200%);
+  animation-name: slide-in-right;
+}
+
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-200%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(200%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }

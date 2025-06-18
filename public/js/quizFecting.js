@@ -6,22 +6,26 @@ const answerScores = { A: 1, B: 2, C: 3, D: 4, E: 5 };
 
 const traitTracker = {};
 
-const traitScores = {}; 
+const traitScores = {};
 async function fetchQuestions() {
-  const res = await fetch('/quiz/questions');
+  const res = await fetch("/quiz/questions");
   questions = await res.json();
   loadQuestion();
 }
 
 function loadQuestion() {
   const q = questions[currentQuestion];
-  document.getElementById("question-title").textContent = `Q${currentQuestion + 1}: ${q.question}`;
+  document.getElementById("question-title").textContent = `Q${
+    currentQuestion + 1
+  }: ${q.question}`;
   document.getElementById("labelA").textContent = q.options.A;
   document.getElementById("labelB").textContent = q.options.B;
   document.getElementById("labelC").textContent = q.options.C;
   document.getElementById("labelD").textContent = q.options.D;
   document.getElementById("labelE").textContent = q.options.E;
-  document.querySelectorAll('input[name="option"]').forEach(el => el.checked = false);
+  document
+    .querySelectorAll('input[name="option"]')
+    .forEach((el) => (el.checked = false));
 }
 
 function submitAnswer() {
@@ -40,7 +44,6 @@ function submitAnswer() {
   traitTracker[trait].total += score;
   traitTracker[trait].count++;
 
-
   const feedback = q.feedback?.[answerKey] || "Answer recorded!";
   document.getElementById("feedback-screen").textContent = feedback;
   document.getElementById("feedback-screen").style.display = "flex";
@@ -58,7 +61,7 @@ function submitAnswer() {
   }, 1000);
 }
 function showResult() {
-  // Calculate trait percentages
+  // Calculate single trait percentages
   for (const trait in traitTracker) {
     const { total, count } = traitTracker[trait];
     traitScores[trait] = parseFloat(((total / (count * 5)) * 100).toFixed(1));
@@ -85,17 +88,16 @@ function showResult() {
   console.log("Final traitScores:", traitScores);
 
   // Send traitScores to server
-  fetch('/quiz/submit-scores', {
-    method: 'POST',
+  fetch("/quiz/submit-scores", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ traitScores })
+    body: JSON.stringify({ traitScores }),
   })
-  .then(res => res.json())
-  .then(data => console.log("Saved to DB:", data))
-  .catch(err => console.error("Save error:", err));
+    .then((res) => res.json())
+    .then((data) => console.log("Saved to DB:", data))
+    .catch((err) => console.error("Save error:", err));
 }
 
-
-fetchQuestions()
+fetchQuestions();
