@@ -228,43 +228,64 @@ router.post("/signup", (req, res) => {
 // --------------------------------- Sign In ----------------------------------------
 router.post("/signin", (req, res) => {
   let { email, password } = req.body;
+
   email = email?.trim();
   password = password?.trim();
 
+  // Basic validation
   if (!email || !password) {
-    res.render("pages/login", { error: "Missing credentials" });
-    //return res.json({ status: "Failed", message: "Missing credentials" });
+    return res.render("pages/login", { error: "Missing credentials" });
   }
 
-  User.find({ email }).then((data) => {
-    if (data.length === 0) {
-      res.status(500).json({ status: "Failed", message: "User not found" });
-      //return res.json({ status: "Failed", message: "User not found" });
-    }
-
-    const user = data[0];
-
-    if (!user.verified) {
-      res.status(500).render("error/error", {
-        code: 500,
-        message: "Email not verified",
-      });
-      //return res.json({ status: "Failed", message: "Email not verified" });
-    }
-
-    bcrypt.compare(password, user.password).then((match) => {
-      if (match) {
-        req.session.user = {
-          name: user.name,
-          email: user.email,
-        };
-        res.redirect("/");
-      } else {
-        res.render("pages/login", { error: "Incorrect password" });
-        //res.json({ status: "Failed", message: "Incorrect password" });
+  // Find user
+  User.find({ email })
+    .then((data) => {
+      if (data.length === 0) {
+        // User not found
+        return res.render("pages/login", { error: "User not found" });
       }
+
+      const user = data[0];
+
+      // Check if user is verified
+      if (!user.verified) {
+        return res.render("error/error", {
+          code: 403,
+          message: "Email not verified. Please check your inbox.",
+        });
+      }
+
+      // Compare password
+      bcrypt
+        .compare(password, user.password)
+        .then((match) => {
+          if (match) {
+            // Successful login
+            req.session.user = {
+              name: user.name,
+              email: user.email,
+            };
+            return res.redirect("/");
+          } else {
+            // Incorrect password
+            return res.render("pages/login", { error: "Incorrect password" });
+          }
+        })
+        .catch((err) => {
+          console.error("Bcrypt Error:", err);
+          return res.status(500).render("error/error", {
+            code: 500,
+            message: "Something went wrong during password check",
+          });
+        });
+    })
+    .catch((err) => {
+      console.error("MongoDB Error:", err);
+      return res.status(500).render("error/error", {
+        code: 500,
+        message: "Database error",
+      });
     });
-  });
 });
 
 module.exports = router;
