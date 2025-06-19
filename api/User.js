@@ -363,5 +363,3 @@ router.post("/reset-password/:userId/:resetString", async (req, res) => {
 });
 
 module.exports = router;
-
-module.exports = router;
