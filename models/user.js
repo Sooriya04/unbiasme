@@ -5,10 +5,6 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   verified: Boolean,
-  traitScores: {
-    type: Object,
-    default: {},
-  },
   gender: String,
   dob: Date,
   age: Number,

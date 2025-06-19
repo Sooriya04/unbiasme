@@ -2,7 +2,9 @@
   font-size: 2rem;
   color: #070707;
   text-decoration: none;
+  font-weight: bold;
 }
+
 .hamburger {
   cursor: pointer;
   z-index: 1001;
@@ -53,7 +55,7 @@
   transform: translateX(9px) translateY(1px) rotate(45deg);
 }
 
-/* Fullscreen Sidebar */
+/* Sidebar */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -62,7 +64,7 @@
   height: 100vh;
   width: 100vw;
   background: #fff;
-  color: white;
+  color: black;
   z-index: 1000;
   justify-content: center;
   align-items: center;
@@ -80,6 +82,8 @@
 .sidebar-menu a:hover {
   text-decoration: underline;
 }
+
+/* Buttons */
 .btn {
   display: inline-block;
   background-color: #4caf50;
@@ -87,12 +91,106 @@
   padding: 10px 20px;
   text-decoration: none;
   border-radius: 8px;
+  font-weight: 500;
 }
+.btn:hover {
+  background-color: #3d8b40;
+}
+
+/* Card Styling */
+.card {
+  background-color: #fff;
+  border-radius: 1rem;
+  border: none;
+}
+.card h3,
+.card-title {
+  font-weight: 700;
+  color: #222;
+}
+.card p {
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.7;
+}
+
+/* Progress Bar */
 .progress {
-  height: 20px;
-  border-radius: 10px;
+  background-color: #e9ecef;
+  height: 8px;
+  border-radius: 4px;
 }
 .progress-bar {
-  border-radius: 10px;
-  font-weight: bold;
+  transition: width 0.6s ease;
+}
+
+/* Text Emphasis */
+.text-info-emphasis {
+  color: #0c5460;
+}
+.text-success-emphasis {
+  color: #155724;
+}
+.text-danger-emphasis {
+  color: #721c24;
+}
+.text-dark-emphasis {
+  color: #343a40;
+}
+.text-primary-emphasis {
+  color: #3b5bdb;
+}
+.text-body-secondary {
+  color: #6c757d;
+}
+
+/* Badges */
+.badge {
+  font-size: 0.9rem;
+  padding: 0.5em 0.8em;
+}
+.badge.bg-danger-subtle {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Round Cards */
+.rounded-4 {
+  border-radius: 1.2rem !important;
+}
+
+/* Responsive Margin */
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+.mb-5 {
+  margin-bottom: 3rem !important;
+}
+
+/* Scrollbar (optional polish) */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 1.4rem;
+  }
+  .sidebar-menu a {
+    font-size: 1.5rem;
+  }
 }
