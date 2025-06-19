@@ -22,7 +22,6 @@ transporter.verify((err) =>
 );
 
 /*────────────────────────────  HELPERS  ────────────────────────────*/
-const APP_URL = process.env.APP_URL || "http://localhost:3000/"; // put in .env
 
 /** Send (or re‑send) a verification email */
 async function sendVerificationEmail(user, res, showPage = true) {
@@ -202,5 +201,167 @@ router.get("/resend-verification/:email", async (req, res) => {
       .render("error/error", { code: 500, message: "Server error" });
   }
 });
+
+/*────────────────────────────  PASSWORD RESET  ────────────────────────────*/
+const passwordReset = require("../models/passwordReset");
+
+/*──────────────────────────── SEND RESET EMAIL ────────────────────────────*/
+router.post("/passwordReset", async (req, res) => {
+  const { email, redirectUrl } = req.body;
+
+  if (!email || !redirectUrl) {
+    return res.status(400).render("error/error", {
+      code: 400,
+      message: "Missing email or redirect URL",
+    });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).render("error/error", {
+        code: 404,
+        message: "No user found with this email",
+      });
+    }
+
+    const resetString = uuidv4() + user._id;
+    await passwordReset.deleteMany({ userId: user._id });
+
+    const hashedResetString = await bcrypt.hash(resetString, 10);
+
+    const newReset = new passwordReset({
+      userId: user._id,
+      resetString: hashedResetString,
+      createdAt: new Date(),
+      expireAt: new Date(Date.now() + 3600000), // 1 hour
+    });
+
+    await newReset.save();
+
+    const mailOptions = {
+      from: process.env.AUTH_EMAIL,
+      to: user.email,
+      subject: "Password Reset - UnbiasMe",
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; padding: 40px 32px; font-family: 'Segoe UI', sans-serif;">
+          <h2>Reset your password</h2>
+          <p>Click the button below. This link is valid for <strong>1 hour</strong>.</p>
+          <a href="${redirectUrl}/user/reset-password/${user._id}/${resetString}"
+            style="display: inline-block; background-color: #212529; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            Reset Password
+          </a>
+          <p>If you didn’t request this, ignore this email.<br /><br />— UnbiasMe Team</p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.render("error/resetPage", {
+      info: "A password reset link has been sent to your email.",
+    });
+  } catch (err) {
+    console.error("Error during password reset request:", err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Failed to send reset email",
+    });
+  }
+});
+
+/*──────────────────────────── RESET PAGE (GET) ────────────────────────────*/
+router.get("/reset-password/:userId/:resetString", async (req, res) => {
+  const { userId, resetString } = req.params;
+
+  try {
+    const resetRecord = await passwordReset.findOne({ userId });
+    if (!resetRecord || resetRecord.expireAt < Date.now()) {
+      return res.render("error/error", {
+        code: 400,
+        message: "Reset link expired or invalid",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(resetString, resetRecord.resetString);
+    if (!isMatch) {
+      return res.render("error/error", {
+        code: 401,
+        message: "Reset link is invalid",
+      });
+    }
+
+    res.render("pages/reset-password", { userId, resetString });
+  } catch (err) {
+    console.error("Error loading reset page:", err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Server error",
+    });
+  }
+});
+
+/*──────────────────────────── HANDLE RESET SUBMIT ────────────────────────────*/
+router.post("/reset-password/:userId/:resetString", async (req, res) => {
+  const { userId, resetString } = req.params;
+  const { newPassword, confirmPassword } = req.body;
+
+  if (!newPassword || !confirmPassword) {
+    return res.status(400).render("pages/reset-password", {
+      error: "All fields are required.",
+      userId,
+      resetString,
+    });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).render("pages/reset-password", {
+      error: "Passwords do not match.",
+      userId,
+      resetString,
+    });
+  }
+
+  if (newPassword.length < 8) {
+    return res.status(400).render("pages/reset-password", {
+      error: "Password must be at least 8 characters",
+      userId,
+      resetString,
+    });
+  }
+
+  try {
+    const resetRecord = await passwordReset.findOne({ userId });
+    if (!resetRecord || resetRecord.expireAt < Date.now()) {
+      return res.render("error/error", {
+        code: 400,
+        message: "Reset link expired or invalid.",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(resetString, resetRecord.resetString);
+    if (!isMatch) {
+      return res.render("error/error", {
+        code: 400,
+        message: "Invalid reset link.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.updateOne({ _id: userId }, { password: hashedPassword });
+    await passwordReset.deleteMany({ userId });
+
+    res.redirect("/login");
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Server error",
+    });
+  }
+});
+
+module.exports = router;
 
 module.exports = router;

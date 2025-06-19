@@ -1,6 +1,6 @@
 require("dotenv").config();
 require("./config/db");
-
+const bcrypt = require("bcrypt");
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
@@ -216,6 +216,49 @@ app.post("/profile/update", async (req, res) => {
       message: "Failed to update profile",
     });
     //res.status(500).send("Failed to update profile");
+  }
+});
+
+// Show form to enter email for password reset
+app.get("/passwordReset", (req, res) => {
+  res.render("pages/enter-email");
+});
+
+// Show enter email form
+app.get("/enter-email", (req, res) => {
+  res.render("pages/enter-email"); // Your EJS file for sending reset email
+});
+
+// Show reset password form
+app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
+  const { userId, resetString } = req.params;
+
+  try {
+    const resetRecord = await require("./models/passwordReset").findOne({
+      userId,
+    });
+    if (!resetRecord) {
+      return res.render("error/error", {
+        code: 400,
+        message: "Invalid or expired reset link",
+      });
+    }
+
+    const match = await bcrypt.compare(resetString, resetRecord.resetString);
+    if (!match) {
+      return res.render("error/error", {
+        code: 401,
+        message: "Reset link is invalid",
+      });
+    }
+
+    res.render("pages/reset-password", { userId, resetString });
+  } catch (err) {
+    console.error("Reset page error:", err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Server error",
+    });
   }
 });
 
