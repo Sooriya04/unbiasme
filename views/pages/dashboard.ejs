@@ -58,9 +58,9 @@
 
       <% if (user && (!user.age || !user.dob || !user.gender)) { %>
       <div class="alert alert-warning">
-        Please
-        <a href="/profile" class="alert-link">complete your profile</a> to get
-        accurate results.
+        ⚠️ Please
+        <a href="/profile" class="alert-link">complete your profile</a>
+        to get accurate personality and workplace insights.
       </div>
       <% } %> <% if (missingTraitScores) { %>
       <div class="alert alert-info">
@@ -87,73 +87,123 @@
               } else {
                 document.getElementById("loader").innerHTML =
                   "❌ Failed to load analysis. Retrying...";
-                tryGenerateAnalysis();
+                setTimeout(tryGenerateAnalysis, 3000);
               }
             })
             .catch((err) => {
               console.error("Gemini error:", err);
               document.getElementById("loader").innerHTML =
                 "❌ Error generating analysis. Retrying...";
-              tryGenerateAnalysis();
+              setTimeout(tryGenerateAnalysis, 3000);
             });
         }
 
         tryGenerateAnalysis();
       </script>
       <% } else if (!geminiData) { %>
-      <div class="alert alert-info">
+      <div class="alert alert-secondary">
         ✨ Analysis is being prepared. Please check back soon!
       </div>
       <% } else { %>
 
       <!-- Personality Summary -->
-      <div class="card p-4 mb-4 border-0 rounded-4">
+      <div class="card p-4 mb-4 border-0 shadow-sm rounded-4">
         <h4 class="mb-3 text-info-emphasis">🧠 Personality Summary</h4>
         <p class="fs-5 text-dark-emphasis" style="line-height: 1.8">
           <%= geminiData.summary %>
         </p>
       </div>
+      <!-- NEW ‑‑ Trait Scores Bar Chart -->
+      <div class="card p-4 mb-4 border-0 shadow-sm rounded-4">
+        <h4 class="mb-3 text-primary-emphasis">📊 Trait Score Breakdown</h4>
+        <div style="width: 100%; height: 400px">
+          <canvas id="traitChart"></canvas>
+        </div>
+      </div>
+      <% if (geminiData && traitScores && Object.keys(traitScores).length > 0) {
+      %>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        const traitScores = <%- JSON.stringify(traitScores) %>;
+        const labels = Object.keys(traitScores);
+        const data = Object.values(traitScores);
+
+        const ctx = document.getElementById("traitChart").getContext("2d");
+
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Trait Score (%)',
+              data: data,
+              backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#fd7e14', '#dc3545'],
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  callback: (value) => value + '%'
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.parsed.y + "%"
+                }
+              }
+            }
+          }
+        });
+      </script>
+      <% } %>
 
       <!-- Cognitive Biases -->
-      <div class="card p-4 mb-5 border-0 rounded-4">
+      <div class="card p-4 mb-5 border-0 shadow-sm rounded-4">
         <h4 class="mb-4 text-danger-emphasis">🎯 Cognitive Biases</h4>
         <% geminiData.biases.forEach((bias, index) => { %>
         <div class="border-start border-3 border-danger ps-3 mb-4">
           <h5><%= index + 1 %>. <strong><%= bias.name %></strong></h5>
-          <p>
-            <span class="fw-semibold">What is it?</span> <%= bias.description %>
-          </p>
-          <p><span class="fw-semibold">Example:</span> <%= bias.example %></p>
-          <p>
-            <span class="fw-semibold">Prevention Tip:</span> <%= bias.prevention
-            %>
-          </p>
+          <p><strong>What is it?</strong> <%= bias.description %></p>
+          <p><strong>Example:</strong> <%= bias.example %></p>
+          <p><strong>Prevention Tip:</strong> <%= bias.prevention %></p>
         </div>
         <% }) %>
       </div>
 
       <!-- Workplace Insights -->
       <% if (geminiData.workplace) { %>
-      <div class="card p-4 border-0 rounded-4">
+      <div class="card p-4 border-0 shadow-sm rounded-4">
         <div class="border-start border-3 border-info ps-3 mb-4">
           <h4 class="mb-4 text-success-emphasis">💼 Workplace Insights</h4>
           <p>
-            <strong>🏢 Ideal Work Environment:</strong> <%=
-            geminiData.workplace.environment %>
+            <strong>🏢 Ideal Work Environment:</strong>
+            <%= geminiData.workplace.environment %>
           </p>
           <p>
-            <strong>🌟 Strengths at Work:</strong> <%=
-            geminiData.workplace.strengths %>
+            <strong>🌟 Strengths at Work:</strong>
+            <%= geminiData.workplace.strengths %>
           </p>
           <p>
-            <strong>⚠️ Challenges to Watch For:</strong> <%=
-            geminiData.workplace.challenges %>
+            <strong>⚠️ Challenges to Watch For:</strong>
+            <%= geminiData.workplace.challenges %>
           </p>
         </div>
       </div>
       <% } %> <% } %>
     </div>
 
+    <!-- <%- include('../partials/footer') %> -->
+
     <script src="/js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   </body>
 </html>

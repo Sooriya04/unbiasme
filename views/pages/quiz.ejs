@@ -53,13 +53,20 @@
 
 <div id="feedback-screen"></div>
 
-<div id="result-screen" style="display: none; text-align: center;">
-  <h2>Quiz Complete!,<%= username %></h2>  
-  <p id="score"></p>
-   <pre id="user-answers-output" style="white-space: pre-wrap; font-family: monospace; margin-top: 1em;"></pre>
+<div id="result-screen" style="display: none; padding: 2rem;">
+  <h2 class="text-center mb-4">Quiz Complete, <%= username %>!</h2>
+
+  <div class="container">
+    <div id="trait-progress-bars" class="row g-3"></div>
+
+    <div class="col-12 text-center mt-4">
+      <a href="/dashboard" class="btn btn-primary">Check Results</a>
+    </div>
+  </div>
 </div>
 
-  <h5><a href="/dashboard">Check Results</a></h5>
+
+  
 </div>
 
 <div id="feedback-screen"></div>

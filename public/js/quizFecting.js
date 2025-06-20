@@ -61,43 +61,66 @@ function submitAnswer() {
   }, 1000);
 }
 function showResult() {
-  // Calculate single trait percentages
+  const resultScreen = document.getElementById("result-screen");
+  const traitContainer = document.getElementById("trait-progress-bars");
+  traitContainer.innerHTML = "";
+
+  // Step 1: Calculate trait scores
   for (const trait in traitTracker) {
     const { total, count } = traitTracker[trait];
-    traitScores[trait] = parseFloat(((total / (count * 5)) * 100).toFixed(1));
+    const score = parseFloat(((total / (count * 5)) * 100).toFixed(1));
+    traitScores[trait] = score;
+
+    // Color logic based on score
+    let color = "bg-danger";
+    if (score >= 70) color = "bg-success";
+    else if (score >= 50) color = "bg-warning";
+
+    // Append progress bar
+    const progress = document.createElement("div");
+    progress.className = "col-12 mb-3";
+    progress.innerHTML = `
+      <h5>${trait}</h5>
+      <div class="progress">
+        <div class="progress-bar ${color} progress-bar-striped progress-bar-animated"
+             style="width: ${score}%" role="progressbar"
+             aria-valuenow="${score}" aria-valuemin="0" aria-valuemax="100">
+          ${score}%
+        </div>
+      </div>
+    `;
+    traitContainer.appendChild(progress);
   }
 
-  // Display result screen
+  // Step 2: Hide quiz and show result screen
   document.getElementById("quiz-container")?.classList.add("hidden");
   document.getElementById("feedback-screen")?.classList.add("hidden");
-
-  const resultScreen = document.getElementById("result-screen");
   resultScreen.style.display = "block";
 
-  const scoreText = Object.entries(traitScores)
-    .map(([trait, score]) => `${trait}: ${score}%`)
-    .join(" | ");
-  document.getElementById("score").textContent = `Your Score: ${scoreText}`;
-
-  let output = "";
-  questions.forEach((q, i) => {
-    output += `Q${i + 1}: ${userAnswers[q.question] || "Not Answered"}\n`;
-  });
-  document.getElementById("user-answers-output").textContent = output;
-
-  console.log("Final traitScores:", traitScores);
-
-  // Send traitScores to server
+  // Step 3: Save scores to DB
   fetch("/quiz/submit-scores", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ traitScores }),
   })
     .then((res) => res.json())
-    .then((data) => console.log("Saved to DB:", data))
-    .catch((err) => console.error("Save error:", err));
+    .then((data) => {
+      console.log("✅ Scores saved");
+
+      // Step 4: Trigger Gemini analysis
+      return fetch("/quiz/analyze-gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ traitScores }),
+      });
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("✅ Gemini analysis complete");
+    })
+    .catch((err) => {
+      console.error("❌ Error saving result or Gemini analysis:", err);
+    });
 }
 
 fetchQuestions();

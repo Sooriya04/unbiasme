@@ -27,6 +27,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const userRouter = require("./api/User");
 const questionsRouter = require("./api/questions");
+const quizRoutes = require("./api/quiz");
+app.use("/quiz", quizRoutes);
 
 app.use("/user", userRouter);
 app.use("/quiz", questionsRouter);
@@ -65,35 +67,32 @@ app.get("/quiz", (req, res) => {
   }
 });
 
-// Dashboard
+/* ------------ dashboard ------------ */
 app.get("/dashboard", async (req, res) => {
-  const userEmail = req.session.user?.email;
-  if (!userEmail) return res.redirect("/login");
+  if (!req.session.user?.email) return res.redirect("/login");
 
   try {
-    const user = await User.findOne({ email: userEmail });
-    if (!user) return res.redirect("/login");
-
+    const user = await User.findOne({ email: req.session.user.email });
     const data = await Data.findOne({ userId: user._id });
 
     res.render("pages/dashboard", {
       username: user.name || "User",
-      user,
+      user: user,
       geminiData: data?.geminiAnalysis || null,
+      traitScores: data?.traitScores || {},
       missingTraitScores:
-        !data ||
-        !data.traitScores ||
-        Object.keys(data.traitScores).length === 0,
+        !data?.traitScores || Object.keys(data.traitScores).length === 0,
       analysisPending: !data?.geminiAnalysis || !data.geminiAnalysis.summary,
     });
   } catch (err) {
-    console.error("Dashboard error:", err);
-    res.status(500).render("error/error", {
-      code: 500,
-      message: "Error loading dashboard",
-    });
+    console.error("Dashboard:", err);
+    res
+      .status(500)
+      .render("error/error", { code: 500, message: "Dashboard error" });
   }
 });
+
+/* ------------ generate-analysis using gemini ------------ */
 app.post("/generate-analysis", async (req, res) => {
   const userEmail = req.session.user?.email;
   if (!userEmail) return res.status(401).json({ error: "Unauthorized" });
@@ -102,28 +101,24 @@ app.post("/generate-analysis", async (req, res) => {
     const user = await User.findOne({ email: userEmail });
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    let data = await Data.findOne({ userId: user._id });
-    if (!data || !data.traitScores) {
+    const data = await Data.findOne({ userId: user._id });
+
+    if (
+      !data ||
+      !data.traitScores ||
+      Object.keys(data.traitScores).length === 0
+    ) {
       return res.status(400).json({ error: "Trait scores not found" });
     }
 
-    // Already has data
-    if (
-      data.geminiAnalysis &&
-      data.geminiAnalysis.summary &&
-      data.geminiAnalysis.biases?.length &&
-      data.geminiAnalysis.workplace?.environment
-    ) {
-      return res.json({ success: true, geminiData: data.geminiAnalysis });
-    }
-
-    // Generate new Gemini analysis
+    // Always regenerate Gemini analysis on request
     const prompt = generateContent(data.traitScores);
     const aiResponse = await getGeminiAnalysis(prompt);
 
     if (aiResponse) {
       data.geminiAnalysis = aiResponse;
       await data.save();
+      console.log("Result is generated");
       return res.json({ success: true, geminiData: aiResponse });
     } else {
       return res.status(500).json({ error: "Failed to generate analysis" });
@@ -134,7 +129,7 @@ app.post("/generate-analysis", async (req, res) => {
   }
 });
 
-// Store Trait Scores (only in Data collection)
+// Store Trait Scores in DB
 app.post("/quiz/submit-scores", async (req, res) => {
   const { traitScores } = req.body;
   const userEmail = req.session.user?.email;
@@ -184,6 +179,7 @@ app.get("/profile", async (req, res) => {
   res.render("pages/profile", { user });
 });
 
+// Updating the profile
 app.post("/profile/update", async (req, res) => {
   const { name, gender, dob, age } = req.body;
   const email = req.session.user?.email;
@@ -211,6 +207,7 @@ app.post("/profile/update", async (req, res) => {
 app.get("/passwordReset", (req, res) => res.render("mails/enter-email"));
 app.get("/enter-email", (req, res) => res.render("mails/enter-email"));
 
+//password reset route
 app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
   const { userId, resetString } = req.params;
 
