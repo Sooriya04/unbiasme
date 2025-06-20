@@ -208,8 +208,8 @@ app.post("/profile/update", async (req, res) => {
 });
 
 // Password Reset Flow
-app.get("/passwordReset", (req, res) => res.render("pages/enter-email"));
-app.get("/enter-email", (req, res) => res.render("pages/enter-email"));
+app.get("/passwordReset", (req, res) => res.render("mails/enter-email"));
+app.get("/enter-email", (req, res) => res.render("mails/enter-email"));
 
 app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
   const { userId, resetString } = req.params;
@@ -233,7 +233,7 @@ app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
       });
     }
 
-    res.render("pages/reset-password", { userId, resetString });
+    res.render("mails/reset-password", { userId, resetString });
   } catch (err) {
     console.error("Reset page error:", err);
     res.status(500).render("error/error", {

@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const User = require("../models/user");
 const UserVerification = require("../models/userVerification");
+const APP_URL = process.env.APP_URL;
 
 /*────────────────────────────  MAIL TRANSPORT  ────────────────────────────*/
 const transporter = nodemailer.createTransport({
@@ -42,24 +43,68 @@ async function sendVerificationEmail(user, res, showPage = true) {
     to: user.email,
     subject: "Verify your email",
     html: `
-      <div style="max-width:540px;margin:0 auto;padding:32px;font-family:Arial,sans-serif">
-        <h2 style="margin-bottom:16px">Hi ${user.name},</h2>
-        <p style="margin:8px 0 24px">
-          Please confirm your email to activate your UnbiasMe account.
-          <br><strong>This link is valid for 6 hours.</strong>
+      <div
+        style="
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 40px 32px;
+          font-family: 'Segoe UI', Roboto, sans-serif;
+          background-color: #f9f9f9;
+          border-radius: 12px;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        "
+      >
+        <h2 style="color: #333; margin-bottom: 24px">
+          Hello, <span style="color: #212529">${user.name}</span>
+        </h2>
+
+        <p
+          style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 24px"
+        >
+          Thank you for registering with <strong>UnbiasMe</strong>. To complete your
+          sign-up, please confirm your email address by clicking the button below.
         </p>
-        <a href="${APP_URL}user/verify/${user._id}/${uniqueString}"
-           style="display:inline-block;background:#212529;color:#fff;
-                  padding:12px 24px;border-radius:6px;text-decoration:none;">
-          Confirm email
-        </a>
-        <p style="font-size:13px;margin-top:40px;color:#666">UnbiasMe Team</p>
-      </div>`,
+
+        <div style="text-align: center; margin: 32px 0">
+          <a
+            href="${APP_URL}user/verify/${user._id}/${uniqueString}"
+            style="
+              background-color: #212529;
+              color: #ffffff;
+              padding: 14px 28px;
+              border-radius: 8px;
+              text-decoration: none;
+              font-weight: 600;
+              font-size: 16px;
+              display: inline-block;
+            "
+          >
+            ✅ Confirm Email
+          </a>
+        </div>
+
+        <p style="font-size: 14px; color: #777">
+          This link will expire in <strong>6 hours</strong>. If you did not create
+          this account, you can safely ignore this message.
+        </p>
+
+        <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee" />
+
+        <p style="font-size: 13px; color: #999; text-align: center">
+          Need help? Contact us at
+          <a href="mailto:support@unbiasme.com" style="color: #666"
+            >support@unbiasme.com</a
+          >
+          <br /><br />— The UnbiasMe Team
+        </p>
+      </div>
+  
+    `,
   };
 
   await transporter.sendMail(mailOptions);
 
-  if (showPage) res.render("pages/verificationSent");
+  if (showPage) res.render("mails/verificationSent", { email: user.email });
 }
 
 /*────────────────────────────  VERIFY  ────────────────────────────*/
@@ -106,7 +151,7 @@ router.get("/verify/:userId/:uniqueString", async (req, res) => {
 
 /*────────────────────────────  RENDER VERIFIED PAGE  ────────────────────────────*/
 router.get("/verified", (req, res) => {
-  res.render("pages/verification"); // success / fail handled in view via querystring
+  res.render("mails/verification"); // success / fail handled in view via querystring
 });
 
 /*────────────────────────────  SIGN‑UP  ────────────────────────────*/
@@ -156,7 +201,7 @@ router.post("/signin", async (req, res) => {
     if (!user) return res.render("pages/login", { error: "User not found" });
 
     if (!user.verified)
-      return res.render("error/resend", {
+      return res.render("mails/resend", {
         email: user.email,
         message: "Email not verified. Please check your inbox.",
       });
@@ -191,7 +236,8 @@ router.get("/resend-verification/:email", async (req, res) => {
       });
 
     await sendVerificationEmail(user, res, false); // reuse function
-    res.render("pages/verificationSent", {
+    res.render("mails/verificationSent", {
+      email: user.email,
       info: "A fresh verification link has been emailed to you.",
     });
   } catch (err) {
@@ -259,7 +305,7 @@ router.post("/passwordReset", async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res.render("error/resetPage", {
+    res.render("mails/resetPage", {
       info: "A password reset link has been sent to your email.",
     });
   } catch (err) {
@@ -292,7 +338,7 @@ router.get("/reset-password/:userId/:resetString", async (req, res) => {
       });
     }
 
-    res.render("pages/reset-password", { userId, resetString });
+    res.render("mails/reset-password", { userId, resetString });
   } catch (err) {
     console.error("Error loading reset page:", err);
     res.status(500).render("error/error", {
@@ -308,7 +354,7 @@ router.post("/reset-password/:userId/:resetString", async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
 
   if (!newPassword || !confirmPassword) {
-    return res.status(400).render("pages/reset-password", {
+    return res.status(400).render("mails/reset-password", {
       error: "All fields are required.",
       userId,
       resetString,
@@ -316,7 +362,7 @@ router.post("/reset-password/:userId/:resetString", async (req, res) => {
   }
 
   if (newPassword !== confirmPassword) {
-    return res.status(400).render("pages/reset-password", {
+    return res.status(400).render("mails/reset-password", {
       error: "Passwords do not match.",
       userId,
       resetString,
@@ -324,7 +370,7 @@ router.post("/reset-password/:userId/:resetString", async (req, res) => {
   }
 
   if (newPassword.length < 8) {
-    return res.status(400).render("pages/reset-password", {
+    return res.status(400).render("mails/reset-password", {
       error: "Password must be at least 8 characters",
       userId,
       resetString,
