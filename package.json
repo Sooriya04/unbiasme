@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "UnbiasMe",
   "dependencies": {
+    "@google/genai": "^1.5.1",
     "@google/generative-ai": "^0.24.1",
     "bcrypt": "^6.0.0",
     "connect-mongo": "^5.1.0",

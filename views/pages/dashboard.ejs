@@ -11,15 +11,16 @@
     <link rel="stylesheet" href="/css/dashboard.css" />
   </head>
   <body>
+    <!-- Navbar -->
     <div
-      class="nav d-flex justify-content-between align-items-center px-3 py-2 bg-light"
+      class="nav d-flex justify-content-between align-items-center px-3 py-2 bg-light shadow-sm"
     >
       <a href="/" class="logo">UnbiasMe</a>
       <div class="hamburger" id="hamburger">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="60"
-          height="60"
+          width="50"
+          height="50"
           viewBox="0 0 200 200"
         >
           <g stroke-width="6.5" stroke-linecap="round">
@@ -42,6 +43,7 @@
       </div>
     </div>
 
+    <!-- Sidebar -->
     <div class="sidebar-overlay" id="sidebar">
       <div class="sidebar-menu text-center">
         <a href="/" class="d-block py-2">Home</a>
@@ -50,30 +52,106 @@
         <a href="/logout" class="d-block py-2">Logout</a>
       </div>
     </div>
-
-    <div class="container mt-4">
-      <h2>Welcome, <%= username %></h2>
+    <!-- Main Content -->
+    <div class="container mt-4 mb-5">
+      <h2 class="mb-4">Welcome, <%= username %></h2>
 
       <% if (user && (!user.age || !user.dob || !user.gender)) { %>
-      <div class="alert alert-warning mt-3">
-        Please take a minute to
-        <a href="/profile">complete your profile</a> (age, date of birth,
-        gender).
+      <div class="alert alert-warning">
+        Please
+        <a href="/profile" class="alert-link">complete your profile</a> to get
+        accurate results.
       </div>
-      <% } %> <% if (Object.keys(traitScores).length === 0) { %>
-      <p>You haven't taken the quiz yet.</p>
-      <a href="/quiz" class="btn btn-primary">Take me to the quiz</a>
-      <% } else { %>
-      <div class="mt-3">
-        <h4>Your Trait Scores:</h4>
-        <% for (let trait in traitScores) { %>
-        <div><strong><%= trait %></strong>: <%= traitScores[trait] %>%</div>
-        <% } %>
+      <% } %> <% if (missingTraitScores) { %>
+      <div class="alert alert-info">
+        🧪 You haven't taken the quiz yet.
+        <a href="/quiz" class="alert-link">Take the quiz now</a> to see your
+        results.
       </div>
-      <% } %>
+      <% } else if (analysisPending) { %>
+      <div id="loader" class="text-center mt-4">
+        <p class="fs-5 text-secondary">
+          🔄 Generating your analysis, please wait...
+        </p>
+      </div>
+      <script>
+        function tryGenerateAnalysis() {
+          fetch("/generate-analysis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                location.reload();
+              } else {
+                document.getElementById("loader").innerHTML =
+                  "❌ Failed to load analysis. Retrying...";
+                tryGenerateAnalysis();
+              }
+            })
+            .catch((err) => {
+              console.error("Gemini error:", err);
+              document.getElementById("loader").innerHTML =
+                "❌ Error generating analysis. Retrying...";
+              tryGenerateAnalysis();
+            });
+        }
 
-      <br />
-      <!-- <a href="/logout">Logout</a> -->
+        tryGenerateAnalysis();
+      </script>
+      <% } else if (!geminiData) { %>
+      <div class="alert alert-info">
+        ✨ Analysis is being prepared. Please check back soon!
+      </div>
+      <% } else { %>
+
+      <!-- Personality Summary -->
+      <div class="card p-4 mb-4 border-0 rounded-4">
+        <h4 class="mb-3 text-info-emphasis">🧠 Personality Summary</h4>
+        <p class="fs-5 text-dark-emphasis" style="line-height: 1.8">
+          <%= geminiData.summary %>
+        </p>
+      </div>
+
+      <!-- Cognitive Biases -->
+      <div class="card p-4 mb-5 border-0 rounded-4">
+        <h4 class="mb-4 text-danger-emphasis">🎯 Cognitive Biases</h4>
+        <% geminiData.biases.forEach((bias, index) => { %>
+        <div class="border-start border-3 border-danger ps-3 mb-4">
+          <h5><%= index + 1 %>. <strong><%= bias.name %></strong></h5>
+          <p>
+            <span class="fw-semibold">What is it?</span> <%= bias.description %>
+          </p>
+          <p><span class="fw-semibold">Example:</span> <%= bias.example %></p>
+          <p>
+            <span class="fw-semibold">Prevention Tip:</span> <%= bias.prevention
+            %>
+          </p>
+        </div>
+        <% }) %>
+      </div>
+
+      <!-- Workplace Insights -->
+      <% if (geminiData.workplace) { %>
+      <div class="card p-4 border-0 rounded-4">
+        <div class="border-start border-3 border-info ps-3 mb-4">
+          <h4 class="mb-4 text-success-emphasis">💼 Workplace Insights</h4>
+          <p>
+            <strong>🏢 Ideal Work Environment:</strong> <%=
+            geminiData.workplace.environment %>
+          </p>
+          <p>
+            <strong>🌟 Strengths at Work:</strong> <%=
+            geminiData.workplace.strengths %>
+          </p>
+          <p>
+            <strong>⚠️ Challenges to Watch For:</strong> <%=
+            geminiData.workplace.challenges %>
+          </p>
+        </div>
+      </div>
+      <% } %> <% } %>
     </div>
 
     <script src="/js/dashboard.js"></script>

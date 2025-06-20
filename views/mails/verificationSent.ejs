@@ -24,15 +24,21 @@
       >
         <span>Open Gmail</span>
       </a>
+
       <!-- Resend Verification Link -->
       <div class="resend-link text-center">
         <p class="mb-1">Didn’t receive the email?</p>
+
+        <% if (typeof email !== "undefined") { %>
         <a
           href="/user/resend-verification/<%= email %>"
           class="hover-underline-animations left"
         >
           Resend Verification
         </a>
+        <% } else { %>
+        <p style="color: red">Error: Email not provided for resend link.</p>
+        <% } %>
       </div>
     </div>
   </body>
