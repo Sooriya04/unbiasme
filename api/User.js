@@ -7,6 +7,9 @@ require("dotenv").config();
 
 const User = require("../models/user");
 const UserVerification = require("../models/userVerification");
+const passwordReset = require("../models/passwordReset");
+
+const APP_URL = process.env.APP_URL;
 
 /*────────────────────────────  MAIL TRANSPORT  ────────────────────────────*/
 const transporter = nodemailer.createTransport({
@@ -23,16 +26,14 @@ transporter.verify((err) =>
 
 /*────────────────────────────  HELPERS  ────────────────────────────*/
 
-/** Send (or re‑send) a verification email */
 async function sendVerificationEmail(user, res, showPage = true) {
   const uniqueString = uuidv4() + user._id;
 
-  // store a fresh verification doc
   const verificationDoc = new UserVerification({
     userId: user._id,
     uniqueString: await bcrypt.hash(uniqueString, 10),
     createdAt: new Date(),
-    expireAt: new Date(Date.now() + 6 * 60 * 60 * 1000), // 6 hours
+    expireAt: new Date(Date.now() + 6 * 60 * 60 * 1000),
   });
 
   await verificationDoc.save();
@@ -59,10 +60,12 @@ async function sendVerificationEmail(user, res, showPage = true) {
 
   await transporter.sendMail(mailOptions);
 
-  if (showPage) res.render("pages/verificationSent");
+  if (showPage) {
+    res.render("pages/verificationSent", { email: user.email });
+  }
 }
 
-/*────────────────────────────  VERIFY  ────────────────────────────*/
+/*──────────────────────────── VERIFY ────────────────────────────*/
 router.get("/verify/:userId/:uniqueString", async (req, res) => {
   try {
     const { userId, uniqueString } = req.params;
@@ -104,16 +107,15 @@ router.get("/verify/:userId/:uniqueString", async (req, res) => {
   }
 });
 
-/*────────────────────────────  RENDER VERIFIED PAGE  ────────────────────────────*/
+/*──────────────────────────── VERIFIED PAGE ────────────────────────────*/
 router.get("/verified", (req, res) => {
-  res.render("pages/verification"); // success / fail handled in view via querystring
+  res.render("pages/verification");
 });
 
-/*────────────────────────────  SIGN‑UP  ────────────────────────────*/
+/*──────────────────────────── SIGNUP ────────────────────────────*/
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body || {};
 
-  /* basic validation */
   if (!name || !email || !password)
     return res.render("pages/signup", { error: "All fields are required" });
 
@@ -137,14 +139,14 @@ router.post("/signup", async (req, res) => {
       verified: false,
     }).save();
 
-    await sendVerificationEmail(newUser, res); // finishes with ‘verificationSent’ page
+    await sendVerificationEmail(newUser, res);
   } catch (err) {
     console.error(err);
     res.status(500).render("error/error", { code: 500, message: "DB error" });
   }
 });
 
-/*────────────────────────────  SIGN‑IN  ────────────────────────────*/
+/*──────────────────────────── SIGNIN ────────────────────────────*/
 router.post("/signin", async (req, res) => {
   const { email = "", password = "" } = req.body;
 
@@ -174,7 +176,7 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-/*────────────────────────────  RESEND VERIFICATION  ────────────────────────────*/
+/*──────────────────────────── RESEND VERIFICATION ────────────────────────────*/
 router.get("/resend-verification/:email", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.params.email });
@@ -190,7 +192,7 @@ router.get("/resend-verification/:email", async (req, res) => {
         message: "Already verified",
       });
 
-    await sendVerificationEmail(user, res, false); // reuse function
+    await sendVerificationEmail(user, res, false);
     res.render("pages/verificationSent", {
       info: "A fresh verification link has been emailed to you.",
     });
@@ -202,10 +204,7 @@ router.get("/resend-verification/:email", async (req, res) => {
   }
 });
 
-/*────────────────────────────  PASSWORD RESET  ────────────────────────────*/
-const passwordReset = require("../models/passwordReset");
-
-/*──────────────────────────── SEND RESET EMAIL ────────────────────────────*/
+/*──────────────────────────── PASSWORD RESET ────────────────────────────*/
 router.post("/passwordReset", async (req, res) => {
   const { email, redirectUrl } = req.body;
 
@@ -218,7 +217,6 @@ router.post("/passwordReset", async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(404).render("error/error", {
         code: 404,
@@ -235,7 +233,7 @@ router.post("/passwordReset", async (req, res) => {
       userId: user._id,
       resetString: hashedResetString,
       createdAt: new Date(),
-      expireAt: new Date(Date.now() + 3600000), // 1 hour
+      expireAt: new Date(Date.now() + 3600000),
     });
 
     await newReset.save();
@@ -271,7 +269,7 @@ router.post("/passwordReset", async (req, res) => {
   }
 });
 
-/*──────────────────────────── RESET PAGE (GET) ────────────────────────────*/
+/*──────────────────────────── RESET PASSWORD PAGE ────────────────────────────*/
 router.get("/reset-password/:userId/:resetString", async (req, res) => {
   const { userId, resetString } = req.params;
 
@@ -302,7 +300,7 @@ router.get("/reset-password/:userId/:resetString", async (req, res) => {
   }
 });
 
-/*──────────────────────────── HANDLE RESET SUBMIT ────────────────────────────*/
+/*──────────────────────────── RESET PASSWORD SUBMIT ────────────────────────────*/
 router.post("/reset-password/:userId/:resetString", async (req, res) => {
   const { userId, resetString } = req.params;
   const { newPassword, confirmPassword } = req.body;
@@ -361,7 +359,5 @@ router.post("/reset-password/:userId/:resetString", async (req, res) => {
     });
   }
 });
-
-module.exports = router;
 
 module.exports = router;
