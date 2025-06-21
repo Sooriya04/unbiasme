@@ -73,6 +73,14 @@ app.get("/dashboard", async (req, res) => {
 
   try {
     const user = await User.findOne({ email: req.session.user.email });
+
+    if (!user) {
+      return res.status(404).render("error/error", {
+        code: 404,
+        message: "User not found in database",
+      });
+    }
+
     const data = await Data.findOne({ userId: user._id });
 
     res.render("pages/dashboard", {
@@ -86,9 +94,10 @@ app.get("/dashboard", async (req, res) => {
     });
   } catch (err) {
     console.error("Dashboard:", err);
-    res
-      .status(500)
-      .render("error/error", { code: 500, message: "Dashboard error" });
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Dashboard error",
+    });
   }
 });
 

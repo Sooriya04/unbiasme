@@ -8,6 +8,29 @@ require("dotenv").config();
 const User = require("../models/user");
 const UserVerification = require("../models/userVerification");
 const APP_URL = process.env.APP_URL;
+router.get("/greeting", async (req, res) => {
+  const userId = req.session.user?._id;
+  if (!userId) return res.redirect("/user/login");
+
+  const user = await User.findById(userId);
+  let greetingMessage = "";
+
+  if (user.status === "justSignedUp") {
+    greetingMessage = `Hi ${user.name}, ready to explore your mind today?`;
+  } else if (user.status === "justSignedIn") {
+    greetingMessage = `Welcome back, ${user.name}!`;
+  } else {
+    greetingMessage = `Hello again, ${user.name}.`;
+  }
+
+  user.status = null;
+  await user.save();
+
+  res.render("pages/greeting", {
+    name: user.name,
+    greetingMessage,
+  });
+});
 
 /*────────────────────────────  MAIL TRANSPORT  ────────────────────────────*/
 const transporter = nodemailer.createTransport({
@@ -104,7 +127,9 @@ async function sendVerificationEmail(user, res, showPage = true) {
 
   await transporter.sendMail(mailOptions);
 
-  if (showPage) res.render("mails/verificationSent", { email: user.email });
+  if (showPage) {
+    return res.render("mails/verificationSent", { email: user.email });
+  }
 }
 
 /*────────────────────────────  VERIFY  ────────────────────────────*/
@@ -149,16 +174,14 @@ router.get("/verify/:userId/:uniqueString", async (req, res) => {
   }
 });
 
-/*────────────────────────────  RENDER VERIFIED PAGE  ────────────────────────────*/
+// ───────────────────── VERIFIED PAGE ─────────────────────
 router.get("/verified", (req, res) => {
-  res.render("mails/verification"); // success / fail handled in view via querystring
+  res.render("mails/verification"); // uses status from querystring
 });
-
 /*────────────────────────────  SIGN‑UP  ────────────────────────────*/
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body || {};
 
-  /* basic validation */
   if (!name || !email || !password)
     return res.render("pages/signup", { error: "All fields are required" });
 
@@ -180,12 +203,24 @@ router.post("/signup", async (req, res) => {
       email,
       password: await bcrypt.hash(password, 10),
       verified: false,
+      status: "justSignedUp",
     }).save();
 
-    await sendVerificationEmail(newUser, res); // finishes with ‘verificationSent’ page
+    // Save session
+    req.session.user = {
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+    };
+
+    // Send email and show verification page
+    await sendVerificationEmail(newUser, res, true); // true = show verificationSent.ejs
   } catch (err) {
     console.error(err);
-    res.status(500).render("error/error", { code: 500, message: "DB error" });
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Something went wrong during signup",
+    });
   }
 });
 
@@ -193,29 +228,49 @@ router.post("/signup", async (req, res) => {
 router.post("/signin", async (req, res) => {
   const { email = "", password = "" } = req.body;
 
-  if (!email || !password)
+  if (!email || !password) {
     return res.render("pages/login", { error: "Missing credentials" });
+  }
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.render("pages/login", { error: "User not found" });
 
-    if (!user.verified)
+    if (!user) {
+      return res.render("pages/login", { error: "User not found" });
+    }
+
+    if (!user.verified) {
       return res.render("mails/resend", {
         email: user.email,
         message: "Email not verified. Please check your inbox.",
       });
+    }
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.render("pages/login", { error: "Incorrect password" });
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.render("pages/login", { error: "Incorrect password" });
+    }
 
-    req.session.user = { name: user.name, email: user.email };
-    res.redirect("/");
+    // Store user in session
+    req.session.user = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    };
+
+    // Update status for greeting logic
+    await User.findByIdAndUpdate(user._id, { status: "justSignedIn" });
+
+    // Save session and redirect
+    req.session.save(() => {
+      res.redirect("/user/greeting");
+    });
   } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .render("error/error", { code: 500, message: "Server error" });
+    console.error("Login error:", err);
+    res.status(500).render("error/error", {
+      code: 500,
+      message: "Internal server error during login",
+    });
   }
 });
 
@@ -235,10 +290,10 @@ router.get("/resend-verification/:email", async (req, res) => {
         message: "Already verified",
       });
 
-    await sendVerificationEmail(user, res, false); // reuse function
+    await sendVerificationEmail(user, res, false);
     res.render("mails/verificationSent", {
       email: user.email,
-      info: "A fresh verification link has been emailed to you.",
+      info: "New verification link sent.",
     });
   } catch (err) {
     console.error(err);

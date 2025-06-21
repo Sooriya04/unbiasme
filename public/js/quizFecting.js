@@ -105,7 +105,7 @@ function showResult() {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log("✅ Scores saved");
+      console.log(" Scores saved");
 
       // Step 4: Trigger Gemini analysis
       return fetch("/quiz/analyze-gemini", {
