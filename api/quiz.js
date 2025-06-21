@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Data = require("../models/dataSchema");
 const User = require("../models/user");
-const { generateContent, getGeminiAnalysis } = require("../services/gemini");
+const { generateContent, getGeminiAnalysis } = require("../util/genai");
 
 /* helper: grab logged‑in user */
 async function currentUser(req) {

@@ -170,7 +170,21 @@ a:hover {
   transform: translateX(200%);
   animation-name: slide-in-right;
 }
+.bg-color {
+  background-color: #e0e0e0; /* e0f7ec UnbiasMe green shade */
+  /* border-left: 6px solid #00b894; */
+}
 
+.btn-story {
+  background-color: #019874;
+  color: white;
+  font-weight: 500;
+}
+
+.btn-story:hover {
+  background-color: #019810;
+  color: #fff;
+}
 @keyframes slide-in-left {
   0% {
     transform: translateX(-200%);
