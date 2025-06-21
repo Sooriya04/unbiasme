@@ -33,7 +33,7 @@ app.use("/quiz", quizRoutes);
 app.use("/user", userRouter);
 app.use("/quiz", questionsRouter);
 
-const { getGeminiAnalysis, generateContent } = require("./util/genai");
+const { getGeminiAnalysis, generateContent } = require("./services/genai");
 
 // Home Routes
 app.get("/", (req, res) => res.render("pages/home"));
@@ -137,6 +137,10 @@ app.post("/generate-analysis", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+/* ------------ Story Generating ------------ */
+const storyRouter = require("./api/story");
+app.use(storyRouter); // mounts at /story
 
 // Store Trait Scores in DB
 app.post("/quiz/submit-scores", async (req, res) => {
