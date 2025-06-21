@@ -1,9 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Initialize Gemini with your API key
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Create prompt for trait analysis
 function generateContent(traitScores) {
   return `
 You are an expert psychologist.
@@ -71,4 +69,4 @@ async function getGeminiAnalysis(prompt) {
   }
 }
 
-module.exports = { getGeminiAnalysis, generateContent };
+module.exports = { generateContent, getGeminiAnalysis };

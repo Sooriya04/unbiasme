@@ -16,6 +16,7 @@ app.use(express.json());
 const sessionMiddleware = require("./config/session");
 app.use(sessionMiddleware);
 
+//const { DailyMCQEntry } = require("./models/dailyMCQEntry");
 app.use((req, res, next) => {
   res.locals.name = req.session.user?.name || null;
   next();
@@ -33,7 +34,13 @@ app.use("/quiz", quizRoutes);
 app.use("/user", userRouter);
 app.use("/quiz", questionsRouter);
 
-const { getGeminiAnalysis, generateContent } = require("./util/genai");
+const { getGeminiAnalysis, generateContent } = require("./services/gemini");
+
+/* ─── Daily‑MCQ imports ─── */
+const DailyMCQQuestionSet = require("./models/dailyMCQQuestionSet");
+const { DailyMCQEntry, DailyMCQSummary } = require("./models/dailyMCQEntry");
+const generateDailyMCQQuestions = require("./services/generateDailyMCQQuestions");
+const generateDailySummary = require("./services/generateDailySummary");
 
 // Home Routes
 app.get("/", (req, res) => res.render("pages/home"));
@@ -72,36 +79,46 @@ app.get("/quiz", (req, res) => {
 });
 
 /* ------------ dashboard ------------ */
+
 app.get("/dashboard", async (req, res) => {
   if (!req.session.user?.email) return res.redirect("/login");
-
   try {
     const user = await User.findOne({ email: req.session.user.email });
-
-    if (!user) {
-      return res.status(404).render("error/error", {
-        code: 404,
-        message: "User not found in database",
-      });
-    }
+    if (!user) throw new Error("User not found");
 
     const data = await Data.findOne({ userId: user._id });
 
+    const quizHistoryRaw = await DailyMCQEntry.find({ userId: user._id })
+      .sort({ date: 1 }) // ascending oldest to newest
+      .limit(7)
+      .lean();
+
+    const quizHistory = quizHistoryRaw.slice(-7);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day
+
+    const hasTodayQuiz = quizHistory.some((entry) => {
+      const entryDate = new Date(entry.date);
+      entryDate.setHours(0, 0, 0, 0);
+      return entryDate.getTime() === today.getTime();
+    });
+
     res.render("pages/dashboard", {
       username: user.name || "User",
-      user: user,
+      user,
       geminiData: data?.geminiAnalysis || null,
       traitScores: data?.traitScores || {},
       missingTraitScores:
         !data?.traitScores || Object.keys(data.traitScores).length === 0,
-      analysisPending: !data?.geminiAnalysis || !data.geminiAnalysis.summary,
+      analysisPending: !data?.geminiAnalysis?.summary,
+      quizHistory,
+      hasTodayQuiz, // NEW
     });
   } catch (err) {
-    console.error("Dashboard:", err);
-    res.status(500).render("error/error", {
-      code: 500,
-      message: "Dashboard error",
-    });
+    console.error("Dashboard error:", err);
+    res
+      .status(500)
+      .render("error/error", { code: 500, message: "Dashboard error" });
   }
 });
 
@@ -256,11 +273,6 @@ app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
     });
   }
 });
-/* ─── Daily‑MCQ imports ─── */
-const DailyMCQQuestionSet = require("./models/dailyMCQQuestionSet");
-const { DailyMCQEntry, DailyMCQSummary } = require("./models/dailyMCQEntry");
-const generateDailyMCQQuestions = require("./services/generateDailyMCQQuestions");
-const generateDailySummary = require("./services/generateDailySummary");
 
 /* GET questions */
 app.get("/dailyMCQ/questions", async (req, res) => {
@@ -384,6 +396,19 @@ app.get("/dailyMCQ", (req, res) => {
     return res.redirect("/login");
   }
   res.render("pages/dailyMCQ", { username: req.session.user.name });
+});
+/* ─────────────── Sending Summary to Dashboard ─────────────── */
+function requireLogin(req, res, next) {
+  if (req.session?.user?.email) return next();
+  return res.status(401).json({ error: "Unauthorized" });
+}
+
+app.get("/dailyMCQ/history", requireLogin, async (req, res) => {
+  const user = await User.findOne({ email: req.session.user.email });
+  const entries = await DailyMCQEntry.find({ userId: user._id })
+    .sort({ date: 1 })
+    .select("date totalScore summary -_id");
+  res.json(entries);
 });
 
 /* ─────────────── 404 CATCH‑ALL ─────────────── */

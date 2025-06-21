@@ -199,10 +199,165 @@
       </div>
       <% } %> <% } %>
     </div>
+    <!-- alert-warning if user did not atten the quiz -->
+    <% if (!hasTodayQuiz) { %>
+    <div class="alert alert-warning text-center mt-4" role="alert">
+      You haven't attempted today's quiz.
+      <a href="/dailyMCQ" class="alert-link">Click here to take it now!</a>
+    </div>
+    <!--Daily  MCQ-->
+    <% } %> <% if (quizHistory && quizHistory.length > 0) { %>
+    <div class="card mt-4 mx-auto shadow">
+      <div
+        class="card-header text-dark fw-bold fs-5"
+        style="border-top-left-radius: 12px; border-top-right-radius: 12px"
+      >
+        Daily Quiz Scores (Last 7 Days)
+      </div>
+      <div class="card-body">
+        <div
+          style="position: relative; height: 300px; width: 100%"
+          class="mb-4"
+        >
+          <canvas
+            id="dailyQuizChart"
+            style="width: 100%; height: 100%; display: block"
+          ></canvas>
+        </div>
+        <h5 class="fw-semibold text-dark mb-2">Latest MCQ Summary</h5>
+        <div
+          class="d-flex align-items-start gap-3 p-3 rounded-3 border border-secondary-subtle shadow-sm"
+        >
+          <div
+            style="width: 6px; background: #4c8bf5; border-radius: 8px"
+          ></div>
+          <div>
+            <p
+              class="mb-0 text-secondary"
+              style="
+                white-space: pre-wrap;
+                font-size: 1.05rem;
+                line-height: 1.5;
+              "
+            >
+              <%= quizHistory[quizHistory.length - 1].summary %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const entries = <%- JSON.stringify(quizHistory) %>;
+        const labels = entries.map(e => new Date(e.date).toLocaleDateString());
+        const data = entries.map(e => e.totalScore);
+
+        const ctx = document.getElementById("dailyQuizChart").getContext("2d");
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels,
+            datasets: [{
+              label: "Score",
+              data,
+              borderColor: "#4c8bf5",
+              backgroundColor: "rgba(76, 139, 245, 0.2)",
+              tension: 0.3,
+              fill: true,
+              pointRadius: 5,
+              pointBackgroundColor: "#4c8bf5",
+              borderWidth: 3,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                suggestedMax: 15,
+                ticks: {
+                  stepSize: 1,
+                  color: "#555",
+                  font: {
+                    size: 14,
+                  }
+                },
+                title: {
+                  display: true,
+                  text: "Score (out of 15)",
+                  color: "#666",
+                  font: {
+                    size: 16,
+                    weight: "600"
+                  }
+                },
+                grid: {
+                  color: "#eee"
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Date",
+                  color: "#666",
+                  font: {
+                    size: 16,
+                    weight: "600"
+                  }
+                },
+                ticks: {
+                  color: "#555",
+                  font: {
+                    size: 14,
+                  }
+                },
+                grid: {
+                  color: "#f8f8f8"
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  font: {
+                    size: 14,
+                    weight: '600'
+                  },
+                  color: "#4c8bf5"
+                }
+              },
+              tooltip: {
+                backgroundColor: "#4c8bf5",
+                titleFont: {
+                  size: 16,
+                  weight: "700"
+                },
+                bodyFont: {
+                  size: 14,
+                },
+                padding: 10,
+                cornerRadius: 6,
+                displayColors: false,
+              }
+            }
+          }
+        });
+      });
+    </script>
+
+    <% } else { %>
+    <p class="text-center mt-4 text-muted fs-5">No quiz history yet.</p>
+    <% } %>
 
     <!-- <%- include('../partials/footer') %> -->
 
     <script src="/js/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </body>
 </html>
