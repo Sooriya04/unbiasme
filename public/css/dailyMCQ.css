@@ -1,9 +1,15 @@
 .quiz-container {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   min-height: 100vh;
+}
+
+#loading-screen {
+  display: none;
+  text-align: center;
+  font-size: 1.2rem;
 }
 
 .quiz-box {

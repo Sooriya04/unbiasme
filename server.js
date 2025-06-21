@@ -33,7 +33,7 @@ app.use("/quiz", quizRoutes);
 app.use("/user", userRouter);
 app.use("/quiz", questionsRouter);
 
-const { getGeminiAnalysis, generateContent } = require("./util/genai");
+const { getGeminiAnalysis, generateContent } = require("./services/gemini");
 
 // Home Routes
 app.get("/", (req, res) => res.render("pages/home"));
@@ -252,8 +252,137 @@ app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
     });
   }
 });
+/* ─── Daily‑MCQ imports ─── */
+const DailyMCQQuestionSet = require("./models/dailyMCQQuestionSet");
+const { DailyMCQEntry, DailyMCQSummary } = require("./models/dailyMCQEntry");
+const generateDailyMCQQuestions = require("./services/generateDailyMCQQuestions");
+const generateDailySummary = require("./services/generateDailySummary");
 
-// 404
+/* GET questions */
+app.get("/dailyMCQ/questions", async (req, res) => {
+  const userEmail = req.session.user?.email;
+  if (!userEmail) return res.status(401).json({ message: "Not logged in" });
+
+  try {
+    const user = await User.findOne({ email: userEmail });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const existingEntry = await DailyMCQEntry.findOne({
+      userId: user._id,
+      date: today,
+    });
+
+    if (existingEntry) {
+      return res.json({
+        alreadySubmitted: true,
+        summary: existingEntry.summary,
+      });
+    }
+
+    // ✅ Only generate once
+    let qsDoc = await DailyMCQQuestionSet.findOne({
+      userId: user._id,
+      date: today,
+    });
+
+    if (!qsDoc) {
+      const questions = await generateDailyMCQQuestions();
+      qsDoc = await DailyMCQQuestionSet.create({
+        userId: user._id,
+        date: today,
+        questions,
+      });
+    }
+
+    res.json(qsDoc.questions);
+  } catch (err) {
+    console.error("❌ /dailyMCQ/questions error:", err);
+    res.status(500).json({ message: "Failed to fetch questions" });
+  }
+});
+
+/* POST answers */
+app.post("/dailyMCQ/submit", async (req, res) => {
+  const { questions } = req.body;
+  const email = req.session.user?.email;
+  if (!email || !Array.isArray(questions) || questions.length !== 3)
+    return res.status(400).json({ message: "Bad payload" });
+
+  try {
+    const user = await User.findOne({ email });
+    const today = new Date().toISOString().split("T")[0];
+
+    if (await DailyMCQEntry.exists({ userId: user._id, date: today }))
+      return res.json({ alreadySubmitted: true, message: "See you tomorrow!" });
+
+    const totalScore = questions.reduce((s, q) => s + (q.userScore || 0), 0);
+    const summary = await generateDailySummary(questions);
+    console.log("📋 Summary:", summary);
+
+    await DailyMCQEntry.create({
+      userId: user._id,
+      date: today,
+      questions,
+      totalScore,
+      summary,
+    });
+
+    res.json({ summary });
+  } catch (e) {
+    console.error("/dailyMCQ/submit:", e);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* POST combined summary */
+app.post("/dailyMCQ/analyze-gemini", async (req, res) => {
+  const email = req.session.user?.email;
+  if (!email) return res.status(401).json({ message: "Not logged in" });
+
+  try {
+    const user = await User.findOne({ email });
+    const entries = await DailyMCQEntry.find({ userId: user._id }).sort({
+      date: 1,
+    });
+    if (!entries.length)
+      return res.status(400).json({ message: "No entries yet" });
+
+    const prompt = entries
+      .map((e) => `Date ${e.date}: ${e.summary}`)
+      .join("\n\n");
+    const combined = await generateDailySummary([
+      {
+        text: prompt,
+        options: { A: "", B: "", C: "", D: "", E: "" },
+        userAnswer: "A",
+        userScore: 0,
+      },
+    ]);
+
+    await DailyMCQSummary.findOneAndUpdate(
+      { userId: user._id },
+      { combinedSummary: combined, updatedAt: new Date() },
+      { upsert: true, new: true }
+    );
+
+    res.json({ combinedSummary: combined });
+  } catch (e) {
+    console.error("/dailyMCQ/analyze-gemini:", e);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ─────────────── Daily MCQ ─────────────── */
+app.get("/dailyMCQ", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  res.render("pages/dailyMCQ", { username: req.session.user.name });
+});
+
+/* ─────────────── 404 CATCH‑ALL ─────────────── */
 app.use((req, res) => {
   res.status(404).render("error/error", {
     code: 404,
@@ -261,7 +390,7 @@ app.use((req, res) => {
   });
 });
 
-// Start Server
+/* ─────────────── START SERVER ─────────────── */
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
