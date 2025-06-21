@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Today’s Cognitive Bias Story</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .loading {
+        font-style: italic;
+        font-size: 1.2rem;
+        color: #555;
+      }
+
+      .blog-post {
+        padding: 1.5rem;
+        border-radius: 8px;
+      }
+
+      h2.blog-post-title {
+        font-size: 1.8rem;
+      }
+
+      @media (max-width: 768px) {
+        .blog-post {
+          padding: 1rem;
+        }
+
+        h2.blog-post-title {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="container py-4">
+    <h1 class="text-center mb-4">📚 Today’s Cognitive Bias Story</h1>
+
+    <!-- Loading message -->
+    <div
+      id="loadingMessage"
+      class="text-center loading <%= story ? 'd-none' : '' %>"
+    >
+      🌀 Generating story... please wait.
+    </div>
+
+    <!-- Story content -->
+    <div id="storyContainer" class="<%= story ? '' : 'd-none' %>">
+      <% if (story) { %>
+      <article class="blog-post mx-auto">
+        <h2 class="blog-post-title mb-2"><%= story.title %></h2>
+        <p><%= story.content %></p>
+        <hr />
+        <h5>🧠 Bias Name:</h5>
+        <p><%= story.biasName %></p>
+
+        <h5>📘 Bias Definition:</h5>
+        <p><%= story.biasDefinition %></p>
+
+        <h5>❌ What Went Wrong:</h5>
+        <p><%= story.whatWentWrong %></p>
+
+        <h5>✅ How It Was Minimized:</h5>
+        <p><%= story.howMinimized %></p>
+
+        <h5>🌱 How This Helps:</h5>
+        <p><%= story.howHelps %></p>
+      </article>
+      <% } %>
+    </div>
+
+    <script>
+      const storyContainer = document.getElementById("storyContainer");
+      const loadingMessage = document.getElementById("loadingMessage");
+
+      <% if (!story) { %>
+      const pollInterval = setInterval(() => {
+        fetch('/story/api')
+          .then(res => res.json())
+          .then(data => {
+            if (data.ready) {
+              clearInterval(pollInterval);
+              loadingMessage.classList.add("d-none");
+              const s = data.story;
+
+              storyContainer.innerHTML = `
+                <article class="blog-post mx-auto">
+                  <h2 class="blog-post-title mb-2">${s.title}</h2>
+                  <p>${s.content}</p>
+                  <hr />
+                  <h5>🧠 Bias Name:</h5><p>${s.biasName}</p>
+                  <h5>📘 Bias Definition:</h5><p>${s.biasDefinition}</p>
+                  <h5>❌ What Went Wrong:</h5><p>${s.whatWentWrong}</p>
+                  <h5>✅ How It Was Minimized:</h5><p>${s.howMinimized}</p>
+                  <h5>🌱 How This Helps:</h5><p>${s.howHelps}</p>
+                </article>
+              `;
+
+              storyContainer.classList.remove("d-none");
+            }
+          })
+          .catch(err => {
+            console.error("Failed to fetch story:", err);
+          });
+      }, 5000);
+      <% } %>
+    </script>
+  </body>
+</html>

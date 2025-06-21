@@ -188,3 +188,18 @@ a:hover {
     transform: translateX(0);
   }
 }
+.bg-color {
+  background-color: #e0e0e0; /* UnbiasMe green shade */
+  /* border-left: 6px solid #00b894; */
+}
+
+.btn-story {
+  background-color: #00b894;
+  color: white;
+  font-weight: 500;
+}
+
+.btn-story:hover {
+  color: white;
+  background-color: #019874;
+}

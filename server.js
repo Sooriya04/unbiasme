@@ -57,6 +57,10 @@ app.get("/logout", (req, res) => {
   req.session.destroy(() => res.redirect("/login"));
 });
 
+// Story
+const storyRoute = require("./api/stroyRoute");
+app.use("/", storyRoute);
+
 // Quiz
 app.get("/quiz", (req, res) => {
   if (req.session.user) {

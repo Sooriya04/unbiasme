@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Daily Bias MCQ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/quiz.css" />
+  </head>
+  <body>
+    <div id="quiz-container" class="quiz-container">
+      <div class="quiz-box text-center">
+        <h2 id="question-title" class="mb-4"><%= question.question %></h2>
+        <form
+          id="quiz-form"
+          class="d-flex flex-column align-items-center justify-content-center"
+        >
+          <% for (let key in question.options) { %>
+          <label class="radio-button">
+            <input type="radio" name="option" value="<%= key %>" />
+            <span><%= question.options[key] %></span>
+            <span class="radio-button__custom"></span>
+          </label>
+          <% } %>
+          <div class="mt-4 w-100 d-flex justify-content-center">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+        <p class="mt-4">
+          <strong>Why this matters:</strong> <%= question.summary %>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("quiz-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const selected = document.querySelector(
+            'input[name="option"]:checked'
+          );
+          if (!selected) return alert("Please select an answer.");
+
+          const res = await fetch("/daily/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ selected: selected.value }),
+          });
+
+          if (res.ok) {
+            alert("Answer submitted successfully!");
+            window.location.href = "/dashboard";
+          } else {
+            alert("Something went wrong.");
+          }
+        });
+    </script>
+  </body>
+</html>
