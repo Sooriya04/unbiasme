@@ -26,7 +26,7 @@ const DailyMCQQuestionSetSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 60 * 60 * 24, // ⏳ 24 hours in seconds
+    expires: 60 * 60 * 24, // 24 hours in seconds
   },
 });
 

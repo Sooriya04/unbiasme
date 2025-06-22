@@ -83,7 +83,7 @@ function submitToServer() {
       }
     })
     .catch((err) => {
-      console.error("❌ Submit error:", err);
+      console.error("Submit error:", err);
       alert("Error submitting quiz. Please try again.");
     });
 }

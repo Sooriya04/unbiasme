@@ -19,7 +19,7 @@ const QuestionSchema = new mongoose.Schema(
       type: String,
       enum: ["A", "B", "C", "D", "E"],
     },
-    userScore: Number, // Assigned dynamically in JS (A=1, B=2, ..., E=5)
+    userScore: Number,
   },
   { _id: false }
 );
@@ -28,7 +28,7 @@ const DailyMCQEntrySchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   date: { type: Date, required: true },
   questions: [QuestionSchema],
-  totalScore: Number, // Sum of userScore values
+  totalScore: Number,
   summary: { type: String, required: true },
 });
 

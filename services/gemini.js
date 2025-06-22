@@ -60,11 +60,11 @@ async function getGeminiAnalysis(prompt) {
     ) {
       return data;
     } else {
-      console.error("⚠️ Gemini returned incomplete data:", data);
+      console.error("Gemini returned incomplete data:", data);
       return null;
     }
   } catch (err) {
-    console.error("❌ Gemini error:", err.message || err);
+    console.error(" Gemini error:", err.message || err);
     return null;
   }
 }

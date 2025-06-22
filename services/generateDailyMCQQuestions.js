@@ -38,7 +38,7 @@ module.exports = async () => {
       throw new Error("Invalid Gemini response");
     return questions;
   } catch (err) {
-    console.error("⚠️ Gemini question generation failed:", err);
+    console.error("Gemini question generation failed:", err);
     return [
       {
         text: "You see a news article that supports your belief. What do you do?",

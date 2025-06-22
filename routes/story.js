@@ -1,4 +1,3 @@
-// routes/story.js
 const express = require("express");
 const router = express.Router();
 const Story = require("../models/storySchema");
@@ -8,7 +7,6 @@ const { generateFullStory } = require("../services/generateFullStory");
 
 let isGenerating = false;
 
-// GET /story - Render story page, start generation if needed
 router.get("/story", async (req, res) => {
   try {
     const storyDoc = await Story.findOne().sort({ createdAt: -1 });
@@ -38,9 +36,9 @@ router.get("/story", async (req, res) => {
       const generated = await generateFullStory(data.geminiAnalysis);
       if (generated) {
         await Story.create({ content: generated });
-        console.log("✅ Story generated");
+        console.log("Story generated");
       } else {
-        console.error("❌ Failed to generate story");
+        console.error("Failed to generate story");
       }
 
       isGenerating = false;

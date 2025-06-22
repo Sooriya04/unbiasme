@@ -102,7 +102,7 @@ async function sendVerificationEmail(user, res, showPage = true) {
               display: inline-block;
             "
           >
-            ✅ Confirm Email
+           Confirm Email
           </a>
         </div>
 
@@ -176,7 +176,7 @@ router.get("/verify/:userId/:uniqueString", async (req, res) => {
 
 // ───────────────────── VERIFIED PAGE ─────────────────────
 router.get("/verified", (req, res) => {
-  res.render("mails/verification"); // uses status from querystring
+  res.render("mails/verification"); // uses status from query string
 });
 /*────────────────────────────  SIGN‑UP  ────────────────────────────*/
 router.post("/signup", async (req, res) => {
@@ -227,6 +227,7 @@ router.post("/signup", async (req, res) => {
 /*────────────────────────────  SIGN‑IN  ────────────────────────────*/
 router.post("/signin", async (req, res) => {
   const { email = "", password = "" } = req.body;
+  //const email = req.body.email;
 
   if (!email || !password) {
     return res.render("pages/login", { error: "Missing credentials" });
@@ -336,7 +337,7 @@ router.post("/passwordReset", async (req, res) => {
       userId: user._id,
       resetString: hashedResetString,
       createdAt: new Date(),
-      expireAt: new Date(Date.now() + 3600000), // 1 hour
+      expireAt: new Date(Date.now() + 3600000),
     });
 
     await newReset.save();

@@ -14,7 +14,7 @@ router.post("/submit", async (req, res) => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  // ✅ Prevent duplicate submission
+  // Prevent duplicate submission
   const existing = await DailyMCQEntry.findOne({
     userId: user._id,
     date: today,
@@ -32,9 +32,9 @@ router.post("/submit", async (req, res) => {
       0
     );
 
-    // ✅ Generate summary using Gemini
+    // Generate summary using Gemini
     const summary = await generateDailySummary(questions);
-    console.log("🧠 Gemini summary:", summary);
+    console.log("Gemini summary:", summary);
 
     const saved = await DailyMCQEntry.create({
       userId: user._id,
@@ -46,7 +46,7 @@ router.post("/submit", async (req, res) => {
 
     res.json({ message: "Saved daily MCQ", summary: saved.summary });
   } catch (err) {
-    console.error("❌ Save daily MCQ failed:", err);
+    console.error("Save daily MCQ failed:", err);
     res.status(500).json({ message: "Failed to save daily entry" });
   }
 });

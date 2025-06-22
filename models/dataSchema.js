@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-/* ---------- sub‑schemas (no _id) ---------- */
 const biasSchema = new mongoose.Schema(
   { name: String, description: String, example: String, prevention: String },
   { _id: false }

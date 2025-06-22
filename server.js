@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("./config/db");
+require("./config/cron");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
@@ -16,7 +17,6 @@ app.use(express.json());
 const sessionMiddleware = require("./config/session");
 app.use(sessionMiddleware);
 
-//const { DailyMCQEntry } = require("./models/dailyMCQEntry");
 app.use((req, res, next) => {
   res.locals.name = req.session.user?.name || null;
   next();
@@ -26,9 +26,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
-const userRouter = require("./api/User");
-const questionsRouter = require("./api/questions");
-const quizRoutes = require("./api/quiz");
+const userRouter = require("./routes/User");
+const questionsRouter = require("./routes/questions");
+const quizRoutes = require("./routes/quiz");
 app.use("/quiz", quizRoutes);
 
 app.use("/user", userRouter);
@@ -49,14 +49,14 @@ app.get("/signup", (req, res) => res.render("pages/signup"));
 
 // Static Pages
 app.get("/how-the-unbiasme-quiz-works", (req, res) =>
-  res.render("content/unbiase")
+  res.render("static/unbiase")
 );
-app.get("/what-are-cognitive-biases", (req, res) => res.render("content/bias"));
+app.get("/what-are-cognitive-biases", (req, res) => res.render("static/bias"));
 app.get("/how-are-personality-and-bias-linked", (req, res) =>
-  res.render("content/link")
+  res.render("static/link")
 );
 app.get("/what-are-personality-traits", (req, res) =>
-  res.render("content/traits")
+  res.render("static/traits")
 );
 
 // Logout
@@ -65,7 +65,7 @@ app.get("/logout", (req, res) => {
 });
 
 // Story
-const storyRoute = require("./api/stroyRoute");
+const storyRoute = require("./routes/stroyRoute");
 app.use("/", storyRoute);
 
 // Quiz
@@ -89,13 +89,13 @@ app.get("/dashboard", async (req, res) => {
     const data = await Data.findOne({ userId: user._id });
 
     const quizHistoryRaw = await DailyMCQEntry.find({ userId: user._id })
-      .sort({ date: 1 }) // ascending oldest to newest
+      .sort({ date: 1 })
       .limit(7)
       .lean();
 
     const quizHistory = quizHistoryRaw.slice(-7);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to start of day
+    today.setHours(0, 0, 0, 0);
 
     const hasTodayQuiz = quizHistory.some((entry) => {
       const entryDate = new Date(entry.date);
@@ -160,7 +160,7 @@ app.post("/generate-analysis", async (req, res) => {
 });
 
 /* ------------ Story Generating ------------ */
-const storyRouter = require("./api/story");
+const storyRouter = require("./routes/story");
 app.use(storyRouter); // mounts at /story
 
 // Store Trait Scores in DB
@@ -237,11 +237,11 @@ app.post("/profile/update", async (req, res) => {
   }
 });
 
-// Password Reset Flow
+// Password Reset route
 app.get("/passwordReset", (req, res) => res.render("mails/enter-email"));
 app.get("/enter-email", (req, res) => res.render("mails/enter-email"));
 
-//password reset route
+//password reset
 app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
   const { userId, resetString } = req.params;
 
@@ -274,7 +274,7 @@ app.get("/user/reset-password/:userId/:resetString", async (req, res) => {
   }
 });
 
-/* GET questions */
+/* GET DailyMCQ questions questions */
 app.get("/dailyMCQ/questions", async (req, res) => {
   const userEmail = req.session.user?.email;
   if (!userEmail) return res.status(401).json({ message: "Not logged in" });
@@ -296,8 +296,6 @@ app.get("/dailyMCQ/questions", async (req, res) => {
         summary: existingEntry.summary,
       });
     }
-
-    // ✅ Only generate once
     let qsDoc = await DailyMCQQuestionSet.findOne({
       userId: user._id,
       date: today,
@@ -319,7 +317,7 @@ app.get("/dailyMCQ/questions", async (req, res) => {
   }
 });
 
-/* POST answers */
+/* POST summary for daily MCQ */
 app.post("/dailyMCQ/submit", async (req, res) => {
   const { questions } = req.body;
   const email = req.session.user?.email;

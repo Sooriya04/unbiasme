@@ -27,7 +27,7 @@ router.post("/submit-scores", async (req, res) => {
     );
     res.json({ message: "Trait scores saved" });
   } catch (err) {
-    console.error("❌ Save scores:", err);
+    console.error(" Save scores:", err);
     res.status(500).json({ message: "DB error saving trait scores" });
   }
 });
@@ -65,7 +65,7 @@ router.post("/analyze-gemini", async (req, res) => {
     );
     res.json({ message: "Gemini analysis saved" });
   } catch (err) {
-    console.error("❌ Gemini error:", err);
+    console.error("Gemini error:", err);
     res.status(500).json({ message: "Gemini analysis failed" });
   }
 });

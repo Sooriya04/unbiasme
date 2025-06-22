@@ -35,7 +35,7 @@ ${body}
 
     return summary || "A summary could not be generated today.";
   } catch (e) {
-    console.error("⚠️ Gemini summary error:", e);
+    console.error("Gemini summary error:", e);
     return "A summary could not be generated today.";
   }
 };

@@ -65,7 +65,7 @@ function showResult() {
   const traitContainer = document.getElementById("trait-progress-bars");
   traitContainer.innerHTML = "";
 
-  // Step 1: Calculate trait scores
+  // Calculate trait scores
   for (const trait in traitTracker) {
     const { total, count } = traitTracker[trait];
     const score = parseFloat(((total / (count * 5)) * 100).toFixed(1));
@@ -92,12 +92,12 @@ function showResult() {
     traitContainer.appendChild(progress);
   }
 
-  // Step 2: Hide quiz and show result screen
+  // Hide quiz and show result screen
   document.getElementById("quiz-container")?.classList.add("hidden");
   document.getElementById("feedback-screen")?.classList.add("hidden");
   resultScreen.style.display = "block";
 
-  // Step 3: Save scores to DB
+  // Save scores to DB
   fetch("/quiz/submit-scores", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -107,7 +107,7 @@ function showResult() {
     .then((data) => {
       console.log(" Scores saved");
 
-      // Step 4: Trigger Gemini analysis
+      // Gemini analysis
       return fetch("/quiz/analyze-gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -116,10 +116,10 @@ function showResult() {
     })
     .then((res) => res.json())
     .then((data) => {
-      console.log("✅ Gemini analysis complete");
+      console.log("Gemini analysis complete");
     })
     .catch((err) => {
-      console.error("❌ Error saving result or Gemini analysis:", err);
+      console.error("Error saving result or Gemini analysis:", err);
     });
 }
 
