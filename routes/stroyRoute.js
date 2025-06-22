@@ -2,14 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Story = require("../models/storySchema");
 const Data = require("../models/dataSchema");
-const { generateDailyStory } = require("../services/geminiStory");
+const User = require("../models/user");
+const { generateDailyStory } = require("../services/generateFullStory");
 
 router.get("/story", async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  const existing = await Story.findOne({ date: today });
   const story = await Story.findOne({ date: today });
-
-  res.render("pages/story", { story: existing });
+  res.render("pages/story", { story });
 });
 
 router.get("/story/api", async (req, res) => {
@@ -18,19 +17,22 @@ router.get("/story/api", async (req, res) => {
 
   if (story) return res.json({ ready: true, story });
 
-  const user = await User.findOne();
-  const data = await Data.findOne({ userId: user._id });
-
-  if (!data?.geminiAnalysis)
-    return res.json({ ready: false, message: "Gemini analysis not available" });
-
   try {
+    const user = await User.findOne();
+    const data = await Data.findOne({ userId: user._id });
+
+    if (!data?.geminiAnalysis)
+      return res
+        .status(404)
+        .json({ ready: false, message: "No analysis data" });
+
     const storyContent = await generateDailyStory(data.geminiAnalysis);
     story = await Story.create({ ...storyContent, date: today });
+
     return res.json({ ready: true, story });
   } catch (e) {
-    console.error("Story generation error:", e);
-    return res.status(500).json({ ready: false, message: "Generation failed" });
+    console.error("Story API error:", e);
+    return res.status(500).json({ ready: false });
   }
 });
 

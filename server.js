@@ -1,19 +1,20 @@
 require("dotenv").config();
 require("./config/db");
 require("./config/cron");
+require("./scheduler/storyScheduler");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
-
+const mongoose = require("mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 
 const User = require("./models/user");
 const Data = require("./models/dataSchema");
-
+mongoose.set("strictQuery", true);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+const generateTodayBiasIfNeeded = require("./helpers/generateTodayBiasIfNeeded");
 const sessionMiddleware = require("./config/session");
 app.use(sessionMiddleware);
 
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
   res.locals.name = req.session.user?.name || null;
   next();
 });
-
+const initBiasGenerator = require("./start/biasInit");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -43,9 +44,10 @@ const generateDailyMCQQuestions = require("./services/generateDailyMCQQuestions"
 const generateDailySummary = require("./services/generateDailySummary");
 
 // Home Routes
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   const greetingMessage = req.session.greetingMessage;
   delete req.session.greetingMessage; // Show only once
+  const today = new Date().toISOString().slice(0, 10);
 
   res.render("pages/home", {
     name: req.session.user?.name || "Guest",
@@ -53,7 +55,13 @@ app.get("/", (req, res) => {
   });
 });
 
+// Daily Bias learn card
+const biasRoute = require("./routes/bias");
+app.use("/", biasRoute);
+
+// LOGIN ROUTE
 app.get("/login", (req, res) => res.render("pages/login"));
+//SIGNUP ROUTE
 app.get("/signup", (req, res) => res.render("pages/signup"));
 
 // Static Pages
@@ -427,6 +435,7 @@ app.use((req, res) => {
 });
 
 /* ─────────────── START SERVER ─────────────── */
-app.listen(port, () => {
+app.listen(port, async () => {
+  await initBiasGenerator();
   console.log(`Server running on http://localhost:${port}`);
 });

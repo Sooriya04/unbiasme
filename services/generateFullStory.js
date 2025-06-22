@@ -1,78 +1,44 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-function buildStoryPrompt({ summary }) {
-  const perspectives = [
-    "a teacher",
-    "a startup founder",
-    "a student",
-    "a doctor",
-    "a parent",
-    "a team leader",
-    "a designer",
-    "a manager",
-    "a social worker",
-  ];
-  const character =
-    perspectives[Math.floor(Math.random() * perspectives.length)];
+const prompt = `
+You are a cognitive psychologist and storyteller.
 
-  return `
-You are a helpful psychologist and storyteller.
+1. Pick a **random cognitive bias** (don't repeat every day).
+2. Write a **short fictional story** (200–300 words) involving a character who shows that bias in a real-life situation.
+3. Then, explain:
+   - The name of the bias
+   - Its definition
+   - What went wrong in the story
+   - How the bias was minimized or solved
+   - How this helps in future decisions
 
-Write a short, easy-to-understand story (about 250 words) about ${character} who encounters a common cognitive bias. Choose any known bias yourself (like confirmation bias, anchoring bias, sunk cost fallacy, etc.).
+Respond only in valid JSON:
 
-The story should include:
-- A real-life situation where the bias affected the character’s decision
-- What mistake was made due to the bias
-- How they realized the mistake
-- How they corrected or avoided it
-
-Also include a clear definition of the bias.
-
-Return only a JSON object like this:
 {
-  "title": "Catchy title",
-  "content": "Full story (250 words max)",
-  "biasName": "Name of the chosen bias",
-  "biasDefinition": "One-sentence explanation of that bias",
-  "whatWentWrong": "What mistake happened due to the bias",
-  "howMinimized": "How the mistake was realized and fixed",
-  "howHelps": "How this helps the reader avoid such mistakes"
+  "title": "Story title",
+  "content": "Full story body (short fiction)",
+  "biasName": "Bias name",
+  "biasDefinition": "Definition",
+  "whatWentWrong": "Issue shown in the story",
+  "howMinimized": "How the bias was reduced",
+  "howHelps": "How this lesson helps the reader"
 }
-
-Do not use markdown or extra text — only return valid JSON.
-The story should be fresh, realistic, and easy for anyone to relate to.
 `;
-}
 
-async function generateFullStory(geminiAnalysis) {
-  const prompt = buildStoryPrompt(geminiAnalysis);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
+async function generateDailyStory() {
   const result = await model.generateContent(prompt);
-  const raw = result.response.text().trim();
+  const text = result.response.text();
 
-  const cleaned = raw
-    .replace(/^```json/i, "")
-    .replace(/^```/, "")
-    .replace(/```$/, "")
-    .trim();
+  const cleaned = text.replace(/```json|```/g, "").trim();
 
-  const story = JSON.parse(cleaned);
-
-  if (
-    story.title &&
-    story.content &&
-    story.biasName &&
-    story.biasDefinition &&
-    story.whatWentWrong &&
-    story.howMinimized &&
-    story.howHelps
-  ) {
-    return story;
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    console.error("Gemini JSON error:", text);
+    throw err;
   }
-
-  return null;
 }
 
-module.exports = { generateFullStory };
+module.exports = { generateDailyStory };

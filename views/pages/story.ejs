@@ -10,109 +10,97 @@
     />
     <link rel="stylesheet" href="/css/navbar.css" />
     <style>
-      .loading {
-        font-style: italic;
-        font-size: 1.2rem;
-        color: #555;
-      }
-
       .blog-post {
         padding: 1.5rem;
         border-radius: 8px;
       }
-
       h2.blog-post-title {
         font-size: 1.8rem;
       }
-
       @media (max-width: 768px) {
         .blog-post {
           padding: 1rem;
         }
-
         h2.blog-post-title {
           font-size: 1.5rem;
         }
+      }
+      .loading {
+        font-style: italic;
+        color: #666;
+        font-size: 1.2rem;
       }
     </style>
   </head>
 
   <body>
     <%- include('../partials/navbar') %>
+
     <div class="container py-4">
       <h1 class="text-center mb-4">📚 Today’s Cognitive Bias Story</h1>
 
-      <!-- Loading message -->
-      <div
-        id="loadingMessage"
-        class="text-center loading <%= story ? 'd-none' : '' %>"
-      >
+      <% if (!story) { %>
+      <div id="loadingMessage" class="text-center loading">
         🌀 Generating story... please wait.
       </div>
-
-      <!-- Story content -->
-      <div id="storyContainer" class="<%= story ? '' : 'd-none' %>">
-        <% if (story) { %>
+      <div id="storyContainer" class="d-none"></div>
+      <% } else { %>
+      <div id="storyContainer">
         <article class="blog-post mx-auto">
           <h2 class="blog-post-title mb-2"><%= story.title %></h2>
           <p><%= story.content %></p>
           <hr />
           <h5>🧠 Bias Name:</h5>
           <p><%= story.biasName %></p>
-
           <h5>📘 Bias Definition:</h5>
           <p><%= story.biasDefinition %></p>
-
           <h5>❌ What Went Wrong:</h5>
           <p><%= story.whatWentWrong %></p>
-
           <h5>✅ How It Was Minimized:</h5>
           <p><%= story.howMinimized %></p>
-
           <h5>🌱 How This Helps:</h5>
           <p><%= story.howHelps %></p>
         </article>
-        <% } %>
       </div>
+      <% } %>
 
-      <script>
-        const storyContainer = document.getElementById("storyContainer");
-        const loadingMessage = document.getElementById("loadingMessage");
-
-        <% if (!story) { %>
-        const pollInterval = setInterval(() => {
-          fetch('/story/api')
-            .then(res => res.json())
-            .then(data => {
-              if (data.ready) {
-                clearInterval(pollInterval);
-                loadingMessage.classList.add("d-none");
-                const s = data.story;
-
-                storyContainer.innerHTML = `
-                  <article class="blog-post mx-auto">
-                    <h2 class="blog-post-title mb-2">${s.title}</h2>
-                    <p>${s.content}</p>
-                    <hr />
-                    <h5>🧠 Bias Name:</h5><p>${s.biasName}</p>
-                    <h5>📘 Bias Definition:</h5><p>${s.biasDefinition}</p>
-                    <h5>❌ What Went Wrong:</h5><p>${s.whatWentWrong}</p>
-                    <h5>✅ How It Was Minimized:</h5><p>${s.howMinimized}</p>
-                    <h5>🌱 How This Helps:</h5><p>${s.howHelps}</p>
-                  </article>
-                `;
-
-                storyContainer.classList.remove("d-none");
-              }
-            })
-            .catch(err => {
-              console.error("Failed to fetch story:", err);
-            });
-        }, 5000);
-        <% } %>
-      </script>
-      <a href="/">← Back to Home</a>
+      <a href="/" class="btn btn-secondary mt-3">← Back to Home</a>
     </div>
-    <%- include('../partials/footer') %>
+
+    <% if (!story) { %>
+    <script>
+      fetch("/story/api")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.ready) {
+            const s = data.story;
+            document.getElementById("storyContainer").innerHTML = `
+              <article class="blog-post mx-auto">
+                <h2 class="blog-post-title mb-2">${s.title}</h2>
+                <p>${s.content}</p>
+                <hr />
+                <h5>🧠 Bias Name:</h5><p>${s.biasName}</p>
+                <h5>📘 Bias Definition:</h5><p>${s.biasDefinition}</p>
+                <h5>❌ What Went Wrong:</h5><p>${s.whatWentWrong}</p>
+                <h5>✅ How It Was Minimized:</h5><p>${s.howMinimized}</p>
+                <h5>🌱 How This Helps:</h5><p>${s.howHelps}</p>
+              </article>
+            `;
+            document.getElementById("loadingMessage").classList.add("d-none");
+            document
+              .getElementById("storyContainer")
+              .classList.remove("d-none");
+          } else {
+            document.getElementById("loadingMessage").innerText =
+              "❌ Story could not be generated. Try again later.";
+          }
+        })
+        .catch((err) => {
+          document.getElementById("loadingMessage").innerText =
+            "❌ Error loading story.";
+          console.error(err);
+        });
+    </script>
+    <% } %>
   </body>
 </html>
