@@ -43,7 +43,16 @@ const generateDailyMCQQuestions = require("./services/generateDailyMCQQuestions"
 const generateDailySummary = require("./services/generateDailySummary");
 
 // Home Routes
-app.get("/", (req, res) => res.render("pages/home"));
+app.get("/", (req, res) => {
+  const greetingMessage = req.session.greetingMessage;
+  delete req.session.greetingMessage; // Show only once
+
+  res.render("pages/home", {
+    name: req.session.user?.name || "Guest",
+    greetingMessage,
+  });
+});
+
 app.get("/login", (req, res) => res.render("pages/login"));
 app.get("/signup", (req, res) => res.render("pages/signup"));
 

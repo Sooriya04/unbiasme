@@ -8,29 +8,6 @@ require("dotenv").config();
 const User = require("../models/user");
 const UserVerification = require("../models/userVerification");
 const APP_URL = process.env.APP_URL;
-router.get("/greeting", async (req, res) => {
-  const userId = req.session.user?._id;
-  if (!userId) return res.redirect("/user/login");
-
-  const user = await User.findById(userId);
-  let greetingMessage = "";
-
-  if (user.status === "justSignedUp") {
-    greetingMessage = `Hi ${user.name}, ready to explore your mind today?`;
-  } else if (user.status === "justSignedIn") {
-    greetingMessage = `Welcome back, ${user.name}!`;
-  } else {
-    greetingMessage = `Hello again, ${user.name}.`;
-  }
-
-  user.status = null;
-  await user.save();
-
-  res.render("pages/greeting", {
-    name: user.name,
-    greetingMessage,
-  });
-});
 
 /*────────────────────────────  MAIL TRANSPORT  ────────────────────────────*/
 const transporter = nodemailer.createTransport({
@@ -174,6 +151,30 @@ router.get("/verify/:userId/:uniqueString", async (req, res) => {
   }
 });
 
+// ───────────────────── GREETING PAGE ─────────────────────
+router.get("/greeting", async (req, res) => {
+  const userId = req.session.user?._id;
+  if (!userId) return res.redirect("/user/login");
+
+  const user = await User.findById(userId);
+  let greetingMessage = "";
+
+  if (user.status === "justSignedUp") {
+    greetingMessage = `Hi ${user.name}, ready to explore your mind today?`;
+  } else if (user.status === "justSignedIn") {
+    greetingMessage = `Welcome back, ${user.name}!`;
+  } else {
+    greetingMessage = `Hello again, ${user.name}.`;
+  }
+
+  user.status = null;
+  await user.save();
+
+  res.render("pages/greeting", {
+    name: user.name,
+    greetingMessage,
+  });
+});
 // ───────────────────── VERIFIED PAGE ─────────────────────
 router.get("/verified", (req, res) => {
   res.render("mails/verification"); // uses status from query string
@@ -227,8 +228,6 @@ router.post("/signup", async (req, res) => {
 /*────────────────────────────  SIGN‑IN  ────────────────────────────*/
 router.post("/signin", async (req, res) => {
   const { email = "", password = "" } = req.body;
-  //const email = req.body.email;
-
   if (!email || !password) {
     return res.render("pages/login", { error: "Missing credentials" });
   }

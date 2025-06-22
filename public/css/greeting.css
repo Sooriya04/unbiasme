@@ -68,3 +68,25 @@ p {
     font-size: 1.2rem;
   }
 }
+/* Slide-in animation */
+h1,
+p {
+  opacity: 0;
+  transform: translateX(-100%);
+  animation: slideIn 0.9s ease-out forwards;
+}
+
+.slide-in.delay-1 {
+  animation-delay: 0.4s;
+}
+
+.slide-in.delay-2 {
+  animation-delay: 0.8s;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
