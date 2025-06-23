@@ -46,11 +46,14 @@ const generateDailySummary = require("./services/generateDailySummary");
 // Home Routes
 app.get("/", async (req, res) => {
   const greetingMessage = req.session.greetingMessage;
-  delete req.session.greetingMessage; // Show only once
-  const today = new Date().toISOString().slice(0, 10);
+  delete req.session.greetingMessage;
+
+  const user = req.session.user;
+  const isLoggedIn = !!user;
 
   res.render("pages/home", {
-    name: req.session.user?.name || "Guest",
+    name: user?.name || null,
+    isLoggedIn,
     greetingMessage,
   });
 });
@@ -58,6 +61,17 @@ app.get("/", async (req, res) => {
 // Daily Bias learn card
 const biasRoute = require("./routes/bias");
 app.use("/", biasRoute);
+// Contact US
+const contactRoute = require("./routes/contact");
+app.use("/contact", contactRoute);
+
+// About US
+app.get("/about", (req, res) => {
+  res.render("pages/about", {
+    isLoggedIn: !!req.session.user,
+    name: req.session.user?.name || null,
+  });
+});
 
 // LOGIN ROUTE
 app.get("/login", (req, res) => res.render("pages/login"));

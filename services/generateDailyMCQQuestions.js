@@ -6,25 +6,33 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const SYSTEM_PROMPT = `
 You are a psychologist specializing in cognitive biases.
 
-Generate 3 short self-reflection multiple-choice questions based on real-life cognitive bias scenarios. Each question must reflect a specific bias (e.g., confirmation bias, anchoring bias, framing effect, etc.).
+Generate exactly 3 self-reflection multiple-choice questions based on real-life scenarios that reflect specific cognitive biases. Each question should reflect **one** named bias (e.g., anchoring bias, confirmation bias, framing effect, etc.).
 
-Return ONLY valid JSON:
+Each question should have 5 answer choices (A to E), ranging from very biased to very rational:
+- A = very irrational or strongly biased response
+- B = slightly biased
+- C = neutral
+- D = mostly rational
+- E = very rational or unbiased
+
+Each question must clearly demonstrate the bias in a realistic situation. Ensure the bias is easy to identify by the situation.
+
+Format your response as valid JSON ONLY. No markdown.
 
 [
   {
-    "text": "<bias-related scenario question>",
+    "text": "<short real-life scenario involving a specific bias>",
+    "bias": "<name of the bias>",
     "options": {
-      "A": "<very irrational or biased response>",
-      "B": "<slightly biased>",
+      "A": "<very biased or irrational response>",
+      "B": "<slightly biased response>",
       "C": "<neutral response>",
-      "D": "<fairly unbiased>",
-      "E": "<very rational or unbiased>"
+      "D": "<fairly unbiased response>",
+      "E": "<very rational or unbiased response>"
     }
   },
   ...
 ]
-
-DO NOT add markdown or text outside the JSON array.
 `;
 
 module.exports = async () => {
