@@ -7,8 +7,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const mongoose = require("mongoose");
 const app = express();
-const port = process.env.PORT || 3000;
-
+const port = process.env.PORT || 8000;
 const User = require("./models/user");
 const Data = require("./models/dataSchema");
 mongoose.set("strictQuery", true);
@@ -43,21 +42,18 @@ const { DailyMCQEntry, DailyMCQSummary } = require("./models/dailyMCQEntry");
 const generateDailyMCQQuestions = require("./services/generateDailyMCQQuestions");
 const generateDailySummary = require("./services/generateDailySummary");
 
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = !!req.session.user;
+  res.locals.name = req.session.user?.name || null;
+  next();
+});
 // Home Routes
 app.get("/", async (req, res) => {
   const greetingMessage = req.session.greetingMessage;
   delete req.session.greetingMessage;
 
-  const user = req.session.user;
-  const isLoggedIn = !!user;
-
-  res.render("pages/home", {
-    name: user?.name || null,
-    isLoggedIn,
-    greetingMessage,
-  });
+  res.render("pages/home", { greetingMessage });
 });
-
 // Daily Bias learn card
 const biasRoute = require("./routes/bias");
 app.use("/", biasRoute);

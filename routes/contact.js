@@ -36,7 +36,7 @@ router.post("/", async (req, res) => {
   }
 
   const mailOptions = {
-    from: email,
+    from: process.env.AUTH_EMAIL,
     to: process.env.AUTH_EMAIL,
     subject: `📩 New Contact Message from UnbiasMe`,
     html: `
@@ -59,7 +59,7 @@ router.post("/", async (req, res) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    res.render("pages/contactSuccess", { name });
+    res.render("pages/contact", { name });
   } catch (err) {
     console.error("Contact form error:", err);
     res.status(500).render("error/error", {

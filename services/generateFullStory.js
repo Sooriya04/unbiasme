@@ -34,9 +34,25 @@ async function generateDailyStory() {
   const cleaned = text.replace(/```json|```/g, "").trim();
 
   try {
-    return JSON.parse(cleaned);
+    const parsed = JSON.parse(cleaned);
+
+    // Optional check: Ensure all required keys exist
+    const requiredKeys = [
+      "title",
+      "content",
+      "biasName",
+      "biasDefinition",
+      "whatWentWrong",
+      "howMinimized",
+      "howHelps",
+    ];
+    for (const key of requiredKeys) {
+      if (!parsed[key]) throw new Error(`Missing key: ${key}`);
+    }
+
+    return parsed;
   } catch (err) {
-    console.error("Gemini JSON error:", text);
+    console.error("Gemini JSON error:\n", text);
     throw err;
   }
 }

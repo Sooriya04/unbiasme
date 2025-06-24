@@ -61,11 +61,15 @@
             >Contact Us</a
           >
           <% if (isLoggedIn) { %>
-          <a href="/dashboard" class="hover-underline-animations left"
-            >Dashboard</a
-          >
+          <li class="nav-item">
+            <a class="hover-underline-animations left" href="/dashboard"
+              >Dashboard</a
+            >
+          </li>
           <% } else { %>
-          <a href="/login" class="hover-underline-animations left">Login</a>
+          <li class="nav-item">
+            <a class="hover-underline-animations left" href="/login">Login</a>
+          </li>
           <% } %>
         </div>
       </nav>
