@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const Story = require("../models/storySchema");
-const Data = require("../models/dataSchema");
-const User = require("../models/user");
 const { generateDailyStory } = require("../services/generateFullStory");
 
 router.get("/story", async (req, res) => {
@@ -18,20 +16,18 @@ router.get("/story/api", async (req, res) => {
   if (story) return res.json({ ready: true, story });
 
   try {
-    const user = await User.findOne();
-    const data = await Data.findOne({ userId: user._id });
+    const generatedStory = await generateDailyStory();
+    if (!generatedStory) {
+      return res.status(500).json({
+        ready: false,
+        message: "  Story could not be generated. Try again later.",
+      });
+    }
 
-    if (!data?.geminiAnalysis)
-      return res
-        .status(404)
-        .json({ ready: false, message: "No analysis data" });
-
-    const storyContent = await generateDailyStory(data.geminiAnalysis);
-    story = await Story.create({ ...storyContent, date: today });
-
+    story = await Story.create({ ...generatedStory, date: today });
     return res.json({ ready: true, story });
-  } catch (e) {
-    console.error("Story API error:", e);
+  } catch (err) {
+    console.error("  /story/api error:", err);
     return res.status(500).json({ ready: false });
   }
 });

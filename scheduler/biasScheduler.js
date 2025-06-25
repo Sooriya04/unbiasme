@@ -18,6 +18,6 @@ cron.schedule("0 0 * * *", async () => {
 
     console.log(`✅ Bias of the Day: ${newBias.name}`);
   } catch (err) {
-    console.error("❌ Cron Error:", err.message);
+    console.error("  Cron Error:", err.message);
   }
 });

@@ -21,6 +21,6 @@ async function generateNow() {
 }
 
 generateNow().catch((err) => {
-  console.error("❌ Error generating now:", err.message);
+  console.error("  Error generating now:", err.message);
   process.exit(1);
 });

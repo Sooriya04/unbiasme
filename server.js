@@ -1,13 +1,13 @@
 require("dotenv").config();
 require("./config/db");
 require("./config/cron");
-require("./scheduler/storyScheduler");
+require("./scheduler/storyScheduler")();
 const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const mongoose = require("mongoose");
 const app = express();
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 const User = require("./models/user");
 const Data = require("./models/dataSchema");
 mongoose.set("strictQuery", true);
@@ -187,7 +187,7 @@ app.post("/generate-analysis", async (req, res) => {
 });
 
 /* ------------ Story Generating ------------ */
-const storyRouter = require("./routes/story");
+const storyRouter = require("./routes/stroyRoute");
 app.use(storyRouter); // mounts at /story
 
 // Store Trait Scores in DB
@@ -218,7 +218,6 @@ app.post("/quiz/submit-scores", async (req, res) => {
     } else {
       data.traitScores = traitScores;
     }
-
     await data.save();
 
     res.json({ message: "Trait scores saved successfully" });
@@ -339,7 +338,7 @@ app.get("/dailyMCQ/questions", async (req, res) => {
 
     res.json(qsDoc.questions);
   } catch (err) {
-    console.error("❌ /dailyMCQ/questions error:", err);
+    console.error("  /dailyMCQ/questions error:", err);
     res.status(500).json({ message: "Failed to fetch questions" });
   }
 });
@@ -360,7 +359,7 @@ app.post("/dailyMCQ/submit", async (req, res) => {
 
     const totalScore = questions.reduce((s, q) => s + (q.userScore || 0), 0);
     const summary = await generateDailySummary(questions);
-    console.log("📋 Summary:", summary);
+    console.log("Summary:", summary);
 
     await DailyMCQEntry.create({
       userId: user._id,

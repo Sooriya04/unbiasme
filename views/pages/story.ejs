@@ -54,7 +54,7 @@
           <p><%= story.biasName %></p>
           <h5>📘 Bias Definition:</h5>
           <p><%= story.biasDefinition %></p>
-          <h5>❌ What Went Wrong:</h5>
+          <h5>What Went Wrong:</h5>
           <p><%= story.whatWentWrong %></p>
           <h5>✅ How It Was Minimized:</h5>
           <p><%= story.howMinimized %></p>
@@ -81,7 +81,7 @@
                 <hr />
                 <h5>🧠 Bias Name:</h5><p>${s.biasName}</p>
                 <h5>📘 Bias Definition:</h5><p>${s.biasDefinition}</p>
-                <h5>❌ What Went Wrong:</h5><p>${s.whatWentWrong}</p>
+                <h5>  What Went Wrong:</h5><p>${s.whatWentWrong}</p>
                 <h5>✅ How It Was Minimized:</h5><p>${s.howMinimized}</p>
                 <h5>🌱 How This Helps:</h5><p>${s.howHelps}</p>
               </article>
@@ -92,12 +92,12 @@
               .classList.remove("d-none");
           } else {
             document.getElementById("loadingMessage").innerText =
-              "❌ Story could not be generated. Try again later.";
+              "  Story could not be generated. Try again later.";
           }
         })
         .catch((err) => {
           document.getElementById("loadingMessage").innerText =
-            "❌ Error loading story.";
+            "  Error loading story.";
           console.error(err);
         });
     </script>

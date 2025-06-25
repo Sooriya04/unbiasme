@@ -2,58 +2,43 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const prompt = `
-You are a cognitive psychologist and storyteller.
+async function generateDailyStory() {
+  const prompt = `
+You're a creative writer and psychology expert.
 
-1. Pick a **random cognitive bias** (don't repeat every day).
-2. Write a **short fictional story** (200–300 words) involving a character who shows that bias in a real-life situation.
-3. Then, explain:
-   - The name of the bias
-   - Its definition
-   - What went wrong in the story
-   - How the bias was minimized or solved
-   - How this helps in future decisions
+Write a short fictional story (~100 words) that illustrates a real-world example of a cognitive bias.
 
-Respond only in valid JSON:
+The story should:
+- Have a short title.
+- Include a clear example of a bias.
+- End with a small lesson or insight.
 
+Then, return a JSON with:
 {
-  "title": "Story title",
-  "content": "Full story body (short fiction)",
-  "biasName": "Bias name",
-  "biasDefinition": "Definition",
-  "whatWentWrong": "Issue shown in the story",
-  "howMinimized": "How the bias was reduced",
-  "howHelps": "How this lesson helps the reader"
+  "title": "Title of the story",
+  "content": "Full story content",
+  "biasName": "Name of the bias",
+  "biasDefinition": "Short definition of the bias",
+  "whatWentWrong": "Explain what the character did wrong due to the bias",
+  "howMinimized": "How the bias was identified or reduced",
+  "howHelps": "What readers can learn from it"
 }
 `;
 
-async function generateDailyStory() {
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
-
-  const cleaned = text.replace(/```json|```/g, "").trim();
-
   try {
-    const parsed = JSON.parse(cleaned);
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
 
-    // Optional check: Ensure all required keys exist
-    const requiredKeys = [
-      "title",
-      "content",
-      "biasName",
-      "biasDefinition",
-      "whatWentWrong",
-      "howMinimized",
-      "howHelps",
-    ];
-    for (const key of requiredKeys) {
-      if (!parsed[key]) throw new Error(`Missing key: ${key}`);
-    }
+    const jsonStart = text.indexOf("{");
+    const jsonEnd = text.lastIndexOf("}");
+    const jsonString = text.slice(jsonStart, jsonEnd + 1);
 
-    return parsed;
+    const story = JSON.parse(jsonString);
+    return story;
   } catch (err) {
-    console.error("Gemini JSON error:\n", text);
-    throw err;
+    console.error("  Gemini story generation failed:", err);
+    return null;
   }
 }
 

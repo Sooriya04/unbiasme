@@ -4,7 +4,7 @@ async function initBiasGenerator() {
   try {
     await generateTodayBiasIfNeeded();
   } catch (err) {
-    console.error("❌ Bias generation failed:", err.message);
+    console.error("  Bias generation failed:", err.message);
   }
 }
 

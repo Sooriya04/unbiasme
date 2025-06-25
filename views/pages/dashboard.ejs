@@ -85,14 +85,14 @@
                 location.reload();
               } else {
                 document.getElementById("loader").innerHTML =
-                  "❌ Failed to load analysis. Retrying...";
+                  "  Failed to load analysis. Retrying...";
                 setTimeout(tryGenerateAnalysis, 3000);
               }
             })
             .catch((err) => {
               console.error("Gemini error:", err);
               document.getElementById("loader").innerHTML =
-                "❌ Error generating analysis. Retrying...";
+                "  Error generating analysis. Retrying...";
               setTimeout(tryGenerateAnalysis, 3000);
             });
         }

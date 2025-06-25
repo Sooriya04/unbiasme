@@ -20,7 +20,7 @@ async function generateTodayBiasIfNeeded() {
     await Bias.create(biasData);
     console.log("✅ Bias generated at server start:", biasData.name);
   } catch (err) {
-    console.error("❌ Failed to generate today's bias:", err.message);
+    console.error("  Failed to generate today's bias:", err.message);
   }
 }
 
