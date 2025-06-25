@@ -6,18 +6,22 @@
 
 ## 🔍 Features
 
--✅ **Secure Authentication**: User registration, login, and session handling
--📧 **Email Verification**: Protects users and confirms account authenticity
--🧠 **Personality & Bias Quiz**: Curated questions based on psychological models and research
--📊 **Result Dashboard**: Visual feedback on trait percentage scores
--🤖 **Gemini AI Integration**: Validates user responses and generates smart feedback
--🔁 **Resend Verification**: Option to resend email if not received
--💡 **Dynamic Question Loading**: Quiz questions fetched and rendered via JavaScript
--📖 **Daily Story**: A new short story each day to highlight cognitive biases in real-life situations
-📝 **Daily Quiz**: One engaging multiple-choice question per day to test and reflect on bias awareness
--🌐 **Fully Responsive Design**: Smooth experience on desktop, tablet, and mobile
+- ✅ **Secure Authentication**: User registration, login, and session handling
+- 📧 **Email Verification**: Protects users and confirms account authenticity
+- 🧠 **Personality & Bias Quiz**: Curated questions based on psychological models and research
+- 📊 **Result Dashboard**: Visual feedback on trait percentage scores
+- 🤖 **Gemini AI Integration**: Validates user responses and generates smart feedback
+- 🔁 **Resend Verification**: Option to resend email if not received
+- 💡 **Dynamic Question Loading**: Quiz questions fetched and rendered via JavaScript
+- 📖 **Daily Story**: A new short story each day to highlight cognitive biases in real-life situations
+- 📝 **Daily Quiz**: One engaging multiple-choice question per day to test and reflect on bias awareness
+- 🌐 **Fully Responsive Design**: Smooth experience on desktop, tablet, and mobile
 
-## 💾 MongoDB Storage: Efficient storage of users, results, and response
+## 💾 MongoDB Storage
+
+Efficient storage of users, quiz results, AI feedback, and daily content using MongoDB.
+
+---
 
 ## 🛠️ Technologies Used
 

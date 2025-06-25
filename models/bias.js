@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const biasSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, unique: true },
   definition: String,
   example: String,
   prevention: String,

@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 
 const storySchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
+    unique: false,
+  },
   date: { type: String },
   title: String,
   content: String,

@@ -1,42 +1,54 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Bias = require("../models/bias");
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-const randomBiasPrompt = `
+async function generateRandomBias() {
+  const usedBiases = await Bias.find().select("name -_id");
+  const usedNames = usedBiases.map((b) => b.name.toLowerCase());
+
+  const prompt = `
 You are a psychology expert.
 
-Select **one random cognitive bias** from any known psychological research or behavioral science sources (not limited to a fixed list).
+Pick one random cognitive bias (not previously mentioned): 
 
-Respond in **valid JSON only** using this structure:
+Already used: [${usedNames.join(", ")}]
 
+Respond only with JSON like:
 {
   "name": "Name of the bias",
-  "definition": "A simple 1-2 line explanation of the bias",
-  "example": "A relatable real-world example",
-  "prevention": "1-2 lines on how to avoid or reduce the bias"
+  "definition": "1-2 line explanation",
+  "example": "Short real-world scenario",
+  "prevention": "1-2 lines on avoiding this bias"
 }
 
-Requirements:
-- Pick a bias **randomly**, not always the same one
-- Do not return the same bias repeatedly
-- Avoid including markdown (no triple backticks, no explanation)
-- Only return pure JSON as the output
+Do not include markdown or text, only raw JSON.
 `;
 
-async function generateRandomBias() {
-  const result = await model.generateContent(randomBiasPrompt);
-  let text = result.response.text();
+  const result = await model.generateContent(prompt);
+  let text = result.response.text().trim();
 
+  // Clean up any accidental markdown
   if (text.startsWith("```")) {
     text = text.replace(/```json\s*([\s\S]*?)```/, "$1").trim();
-    text = text.replace(/```\s*([\s\S]*?)```/, "$1").trim();
   }
 
   try {
-    return JSON.parse(text);
+    const bias = JSON.parse(text);
+
+    const isUsed = usedNames.includes(bias.name?.toLowerCase());
+    if (isUsed) {
+      console.log("Bias already used recently. Skipping.");
+      return null;
+    }
+
+    // Save bias to DB
+    const saved = await Bias.create(bias);
+    return saved;
   } catch (err) {
-    console.error("Gemini returned invalid JSON:", text);
-    throw err;
+    console.error("❌ Gemini returned invalid JSON:", text);
+    return null;
   }
 }
 

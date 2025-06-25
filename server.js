@@ -1,7 +1,16 @@
 require("dotenv").config();
 require("./config/db");
 require("./config/cron");
-require("./scheduler/storyScheduler")();
+const {
+  startStoryScheduler,
+  generateTodayOnce,
+} = require("./scheduler/storyScheduler");
+
+startStoryScheduler();
+generateTodayOnce();
+const startBiasCleanupScheduler = require("./scheduler/biasCleanup");
+startBiasCleanupScheduler();
+
 const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
@@ -185,10 +194,6 @@ app.post("/generate-analysis", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
-/* ------------ Story Generating ------------ */
-const storyRouter = require("./routes/stroyRoute");
-app.use(storyRouter); // mounts at /story
 
 // Store Trait Scores in DB
 app.post("/quiz/submit-scores", async (req, res) => {

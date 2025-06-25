@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Bias = require("../models/bias");
+const { generateRandomBias } = require("../services/geminiBiasService");
 
 router.get("/bias-of-the-day", async (req, res) => {
   const start = new Date();
@@ -9,9 +10,20 @@ router.get("/bias-of-the-day", async (req, res) => {
   end.setHours(23, 59, 59, 999);
 
   try {
-    const bias = await Bias.findOne({ date: { $gte: start, $lte: end } });
-    if (!bias)
-      return res.send("Bias not available yet. Please check back soon.");
+    // Step 1: Check if today's bias already exists
+    let bias = await Bias.findOne({ date: { $gte: start, $lte: end } });
+
+    // Step 2: If not, generate and store a new bias
+    if (!bias) {
+      bias = await generateRandomBias();
+
+      if (!bias) {
+        return res.send(
+          "⚠️ Could not generate a new bias. Please try again later."
+        );
+      }
+    }
+
     res.render("pages/bias", { bias });
   } catch (err) {
     console.error("Error loading bias:", err);

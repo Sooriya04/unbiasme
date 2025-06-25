@@ -4,43 +4,56 @@ const Data = require("../models/dataSchema");
 const Story = require("../models/storySchema");
 const { generateDailyStory } = require("../services/generateFullStory");
 
-function startStoryScheduler() {
-  cron.schedule("0 0 * * *", async () => {
-    console.log("Generating daily story...");
+async function generateTodayOnce() {
+  console.log("Generating today's story...");
 
-    const today = new Date().toISOString().split("T")[0];
-    const existing = await Story.findOne({ date: today });
-    if (existing) {
-      console.log("Story already exists for today");
+  const today = new Date().toISOString().split("T")[0];
+
+  try {
+    await Story.deleteMany({ date: today });
+
+    const user = await User.findOne();
+    if (!user) {
+      console.warn("No user found.");
       return;
     }
 
-    try {
-      const user = await User.findOne();
-      const data = await Data.findOne({ userId: user._id });
-
-      if (!data?.geminiAnalysis) {
-        console.warn("No Gemini analysis found — story skipped.");
-        return;
-      }
-
-      const storyContent = await generateDailyStory(data.geminiAnalysis);
-      if (!storyContent) {
-        console.error("Failed to generate story content");
-        return;
-      }
-
-      await Story.create({
-        ...storyContent,
-        userId: user._id,
-        date: today,
-      });
-
-      console.log("Daily story saved to DB");
-    } catch (err) {
-      console.error("Daily story scheduler error:", err);
+    const data = await Data.findOne({ userId: user._id });
+    if (
+      !data ||
+      !data.geminiAnalysis ||
+      Object.keys(data.geminiAnalysis).length === 0
+    ) {
+      console.warn("No geminiAnalysis found.");
+      return;
     }
+
+    const storyContent = await generateDailyStory(data.geminiAnalysis);
+    if (!storyContent) {
+      console.error("Story content generation failed.");
+      return;
+    }
+
+    await Story.create({
+      ...storyContent,
+      userId: user._id,
+      date: today,
+    });
+
+    console.log("Story created for", today);
+  } catch (err) {
+    console.error("Error creating story:", err);
+  }
+}
+
+function startStoryScheduler() {
+  cron.schedule("0 0 * * *", async () => {
+    console.log("⏰ Running daily story cron...");
+    await generateTodayOnce();
   });
 }
 
-module.exports = startStoryScheduler;
+module.exports = {
+  startStoryScheduler,
+  generateTodayOnce,
+};
