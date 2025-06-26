@@ -20,6 +20,10 @@ body {
   font-size: 2rem;
   color: #2f3e9e;
   text-decoration: none;
+  font-weight: bold;
+}
+.logo:hover {
+  color: #3545b0;
 }
 .nav-link a {
   color: #2f3e9e;

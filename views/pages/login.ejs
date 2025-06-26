@@ -24,13 +24,13 @@
     <% } %>
     <!--Password-->
     <% if (typeof success !== "undefined") { %>
-      <div class="alert alert-success"><%= success %></div>
+    <div class="alert alert-success"><%= success %></div>
     <% } %>
     <!---->
     <main class="login-container">
       <h2 class="text-center mb-4">Welcome Back</h2>
       <p class="text-center mb-4">Please enter your details to login.</p>
-      <form action="/user/signin" class="mt-4" method="POST">
+      <form action="/user/signin" class="mt-4" method="POST" autocomplete="off">
         <div class="mb-3">
           <label class="form-label">Email</label>
           <input
@@ -57,20 +57,18 @@
           >
         </div>
         <div class="text-center mt-5">
-          <button type="submit" class="btn-property">Login</button>
+          <button type="submit" class="btn btn-login">Login</button>
         </div>
+
         <div class="separator"><span>OR</span></div>
 
-      <!-- Signup Button -->
-      <div class="signup-button">
-        <a href="/signup" class="signup-option">
-          <span class="icon">📞</span>
-          Sign up
-        </a>
-      </div>
-    </main>
+        <!-- Signup Button -->
+        <div class="text-center">
+          <a href="/signup" class="btn btn-signup"> Sign up </a>
+        </div>
       </form>
     </main>
+
     <script>
       function hideAlert() {
         const alertBox = document.getElementById("errorAlert");

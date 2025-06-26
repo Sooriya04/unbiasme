@@ -18,7 +18,7 @@ body {
 }
 .signup-container {
   max-width: 500px;
-  margin: 80px auto;
+  margin: 12px auto;
   padding: 30px;
 }
 .form-input-group {
@@ -38,20 +38,42 @@ body {
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
-.btn-property {
-  background-color: #000;
+.btn-signin {
+  background-color: #6c5ce7;
   color: #fff;
   border: none;
   width: 100%;
   padding: 0.75rem;
   border-radius: 50px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  font-weight: 500;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-property:hover {
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
+.btn-signin:hover {
+  color: #fff;
+  background-color: #5a4fdc;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.login-option {
+  width: 100%;
+  background-color: #ffffff;
+  color: #f67280;
+  border: 2px solid #f67280;
+  padding: 0.65rem 1.5rem;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-option:hover {
+  background-color: #f67280;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(246, 114, 128, 0.3);
 }
 
 p {
