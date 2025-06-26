@@ -1,14 +1,7 @@
 body {
-  background-color: #f2f2f2; /* ash */
-  color: #1a1a1a; /* black-ish */
-}
-
-.navbar {
-  background-color: #000;
-}
-
-.navbar a {
-  color: #fff !important;
+  background-color: #ffff;
+  color: #1c1c1c;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .contact-header {
@@ -16,30 +9,56 @@ body {
   padding: 60px 15px 30px;
 }
 
+.contact-header h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  color: #1c1c1c;
+}
+
+.contact-header p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.contact-info {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 30px;
+  color: #444;
+}
+
+.contact-info strong {
+  color: #6c5ce7;
+}
+
+/* Contact Form */
 .contact-form-section {
   background-color: #fff;
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(51, 51, 51, 0.1);
-  margin-bottom: 50px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin-bottom: 60px;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  border-color: #333 !important; /* dark grey or black border */
-  background-color: #fafafa; /* soft ash background */
+.form-label {
+  font-weight: 600;
+  color: #1c1c1c;
 }
 
 input,
-textarea,
-select {
+textarea {
   background-color: #fff;
   color: #000;
   border: 1px solid #ccc;
+  border-radius: 6px;
   transition: border-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #6c5ce7 !important;
+  box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25) !important;
+  outline: none !important;
 }
 
 input::placeholder,
@@ -47,9 +66,32 @@ textarea::placeholder {
   color: #888;
 }
 
+/* Submit Button */
+button[type="submit"] {
+  background-color: #f67280;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+button[type="submit"]:hover {
+  background-color: #e65a69;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(246, 114, 128, 0.3);
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
 .footer-pro {
-  background-color: white;
-  font-family: "Poppins", sans-serif;
+  background-color: #fff;
   font-size: 16px;
   color: #6c757d;
   padding-top: 20px;
@@ -58,7 +100,7 @@ textarea::placeholder {
 .footer-pro .footer-logo {
   font-size: 22px;
   font-weight: 600;
-  color: #2f3e9e;
+  color: #6c5ce7;
   text-decoration: none;
 }
 
@@ -75,10 +117,9 @@ textarea::placeholder {
 }
 
 .footer-pro .nav-link:hover {
-  color: #2f3e9e;
+  color: #6c5ce7;
 }
 
 .footer-pro .text-muted {
   font-size: 15px;
-  color: #6c757d;
 }

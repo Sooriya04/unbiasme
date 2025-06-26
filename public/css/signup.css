@@ -4,6 +4,7 @@ body {
   box-sizing: border-box;
   background-color: #f8f9fa;
   color: #000000;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 .alert-popup {
   position: fixed;

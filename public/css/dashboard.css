@@ -1,3 +1,6 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 .logo {
   font-size: 2rem;
   color: #070707;
@@ -205,4 +208,39 @@ body::-webkit-scrollbar-thumb:hover {
 #scoreChart {
   width: 100% !important;
   height: 100% !important;
+}
+
+/* Footer */
+.footer-pro {
+  background-color: #fff;
+  font-size: 16px;
+  color: #6c757d;
+  padding-top: 20px;
+}
+
+.footer-pro .footer-logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: #6c5ce7;
+  text-decoration: none;
+}
+
+.footer-pro .footer-logo:hover {
+  color: #4b52b6;
+}
+
+.footer-pro .nav-link {
+  color: #6c757d;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 6px 12px;
+  transition: color 0.3s ease;
+}
+
+.footer-pro .nav-link:hover {
+  color: #6c5ce7;
+}
+
+.footer-pro .text-muted {
+  font-size: 15px;
 }
