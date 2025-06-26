@@ -4,7 +4,8 @@
 
 ---
 
-## 👥 About the Authors
+## 👥 About the Team Behind UnbiasMe
+**UnbiasMe** is the result of a collaborative effort between a developer and a researcher passionate about psychology, bias awareness, and technology.
 
 ### 🧠 Lathika — Research Strategist & Content Architect
 
