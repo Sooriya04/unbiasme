@@ -3,9 +3,11 @@
 **UnbiasMe** is a psychology-based web application that helps users discover their **personality traits** and **cognitive biases** through an interactive quiz. The platform blends structured assessment with AI-powered insights to promote self-awareness, personal growth, and decision-making clarity.
 
 ---
+
 ## 👥 About the Authors
 
-### 🧠 Lathika — Research Strategist & Content Architect  
+### 🧠 Lathika — Research Strategist & Content Architect
+
 Lathika is the conceptual backbone of **UnbiasMe**. She meticulously researched cognitive psychology and human biases to shape the entire quiz flow, question design, and analytical model. Her work ensures the platform delivers meaningful insight and promotes self-awareness through scientifically grounded content.
 
 - 🔗 [LinkedIn](https://www.linkedin.com/in/lathika-m-a78781303/)
@@ -14,15 +16,14 @@ Lathika is the conceptual backbone of **UnbiasMe**. She meticulously researched 
 
 ---
 
-### 💻 Sooriya — Full-Stack Developer & Platform Engineer  
+### 💻 Sooriya — Full-Stack Developer & Platform Engineer
+
 Sooriya built **UnbiasMe** from the ground up — integrating powerful backend APIs, secure authentication, and smooth UI interactions. From MongoDB schema design to frontend responsiveness and deployment, his full-stack capabilities made the vision technically possible.
 
-- 🌐 [Portfolio](https://sooriyaportfolio.vercel.app/)
+- 🌐 [Portfolio](https://sooriya04.github.io/sooriya/)
 - 🔗 [LinkedIn](https://www.linkedin.com/in/sooriyab/)
 - 📷 [Instagram](https://www.instagram.com/ucdshso/)
 - 💻 [GitHub](https://github.com/Sooriya04)
-
-
 
 ---
 
