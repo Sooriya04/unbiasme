@@ -1,18 +1,37 @@
 <!-- Footer -->
-<footer class="text-center text-lg-start mt-5">
-  <div class="container p-4">
-    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-      <li class="nav-item">
-        <a href="/" class="nav-link px-3 text-muted">Home</a>
-      </li>
-      <li class="nav-item">
-        <a href="/about" class="nav-link px-3 text-muted">About Us</a>
-      </li>
-      <li class="nav-item">
-        <a href="/contact" class="nav-link px-3 text-muted">Contact Us</a>
-      </li>
-    </ul>
-    <!-- Copyright -->
-    <p class="text-center text-muted mb-0">© 2025 UnbiasMe, Inc</p>
+<footer class="footer-pro mt-5">
+  <div class="container py-4">
+    <div class="row align-items-center border-top pt-4">
+      <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+        <a href="/" class="footer-logo">UnbiasMe</a>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <ul class="nav justify-content-center justify-content-md-end">
+          <li class="nav-item">
+            <a href="/" class="nav-link px-3">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="/about" class="nav-link px-3">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a href="/contact" class="nav-link px-3">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a href="/privacy" class="nav-link px-3">Privacy Policy</a>
+          </li>
+          <li class="nav-item">
+            <a href="/terms" class="nav-link px-3">Terms</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-center text-muted small pt-3">
+      © <span id="year"></span> UnbiasMe, Inc. All rights reserved.
+    </div>
   </div>
 </footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>

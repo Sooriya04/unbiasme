@@ -1,3 +1,4 @@
+// routes/storyRoute.js
 const express = require("express");
 const router = express.Router();
 const Story = require("../models/storySchema");
@@ -8,15 +9,16 @@ router.get("/story", async (req, res) => {
   const story = await Story.findOne({ date: today });
   res.render("pages/story", { story });
 });
-
+// storyRoute.js (only the relevant part shown)
 router.get("/story/api", async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  let story = await Story.findOne({ date: today });
-
-  if (story) return res.json({ ready: true, story });
 
   try {
+    let story = await Story.findOne({ date: today });
+    if (story) return res.json({ ready: true, story });
+
     const generatedStory = await generateDailyStory();
+
     if (!generatedStory) {
       return res.status(500).json({
         ready: false,
@@ -24,7 +26,13 @@ router.get("/story/api", async (req, res) => {
       });
     }
 
-    story = await Story.create({ ...generatedStory, date: today });
+    const storyData = {
+      ...generatedStory,
+      date: today,
+    };
+
+    story = await Story.create(storyData);
+
     return res.json({ ready: true, story });
   } catch (err) {
     console.error("/story/api error:", err);
@@ -34,7 +42,13 @@ router.get("/story/api", async (req, res) => {
 
 router.post("/story", async (req, res) => {
   try {
-    const newStory = await Story.create(req.body);
+    const userId = req.session?.userId || req.user?.id || null;
+    const storyData = {
+      ...req.body,
+      ...(userId && { userId }),
+    };
+
+    const newStory = await Story.create(storyData);
     res.status(201).json(newStory);
   } catch (err) {
     console.error("Create story error:", err);

@@ -10,25 +10,97 @@
     />
     <link rel="stylesheet" href="/css/navbar.css" />
     <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", sans-serif;
+      }
+
       .blog-post {
-        padding: 1.5rem;
-        border-radius: 8px;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        max-width: 900px;
       }
+
+      h1 {
+        color: #1f1f1f;
+        font-weight: 600;
+      }
+
       h2.blog-post-title {
-        font-size: 1.8rem;
+        font-size: 1.9rem;
+        color: #222;
+        font-weight: 600;
       }
-      @media (max-width: 768px) {
-        .blog-post {
-          padding: 1rem;
-        }
-        h2.blog-post-title {
-          font-size: 1.5rem;
-        }
+
+      h5 {
+        color: #2f3e9e;
+        margin-top: 1.2rem;
+        font-weight: 600;
       }
+
+      p {
+        color: #444;
+        line-height: 1.6;
+      }
+
+      .btn-secondary {
+        background-color: #2f3e9e;
+        border: none;
+      }
+
+      .btn-secondary:hover {
+        background-color: #24358c;
+      }
+
       .loading {
         font-style: italic;
         color: #666;
         font-size: 1.2rem;
+      }
+      h5 {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      h5::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -3px;
+        width: 100%;
+        height: 2px;
+        background-color: #ff6f61;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      h5:hover::after {
+        transform: scaleX(1);
+      }
+
+      @media (max-width: 768px) {
+        .blog-post {
+          padding: 1.2rem;
+        }
+
+        h2.blog-post-title {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        h1 {
+          font-size: 1.4rem;
+        }
+
+        .btn-secondary {
+          width: 100%;
+        }
       }
     </style>
   </head>
@@ -36,7 +108,7 @@
   <body>
     <%- include('../partials/navbar') %>
 
-    <div class="container py-4">
+    <div class="container py-4 d-flex flex-column align-items-center">
       <h1 class="text-center mb-4">📚 Today’s Cognitive Bias Story</h1>
 
       <% if (!story) { %>
@@ -45,26 +117,24 @@
       </div>
       <div id="storyContainer" class="d-none"></div>
       <% } else { %>
-      <div id="storyContainer">
-        <article class="blog-post mx-auto">
-          <h2 class="blog-post-title mb-2"><%= story.title %></h2>
-          <p><%= story.content %></p>
-          <hr />
-          <h5>🧠 Bias Name:</h5>
-          <p><%= story.biasName %></p>
-          <h5>📘 Bias Definition:</h5>
-          <p><%= story.biasDefinition %></p>
-          <h5>What Went Wrong:</h5>
-          <p><%= story.whatWentWrong %></p>
-          <h5>✅ How It Was Minimized:</h5>
-          <p><%= story.howMinimized %></p>
-          <h5>🌱 How This Helps:</h5>
-          <p><%= story.howHelps %></p>
-        </article>
+      <div id="storyContainer" class="blog-post">
+        <h2 class="blog-post-title mb-2"><%= story.title %></h2>
+        <p><%= story.content %></p>
+        <hr />
+        <h5>🧠 Bias Name:</h5>
+        <p><%= story.biasName %></p>
+        <h5>📘 Bias Definition:</h5>
+        <p><%= story.biasDefinition %></p>
+        <h5>❗ What Went Wrong:</h5>
+        <p><%= story.whatWentWrong %></p>
+        <h5>✅ How It Was Minimized:</h5>
+        <p><%= story.howMinimized %></p>
+        <h5>🌱 How This Helps:</h5>
+        <p><%= story.howHelps %></p>
       </div>
       <% } %>
 
-      <a href="/" class="btn btn-secondary mt-3">← Back to Home</a>
+      <a href="/" class="btn btn-secondary mt-4">← Back to Home</a>
     </div>
 
     <% if (!story) { %>
@@ -75,29 +145,29 @@
           if (data.ready) {
             const s = data.story;
             document.getElementById("storyContainer").innerHTML = `
-              <article class="blog-post mx-auto">
-                <h2 class="blog-post-title mb-2">${s.title}</h2>
-                <p>${s.content}</p>
-                <hr />
-                <h5>🧠 Bias Name:</h5><p>${s.biasName}</p>
-                <h5>📘 Bias Definition:</h5><p>${s.biasDefinition}</p>
-                <h5>  What Went Wrong:</h5><p>${s.whatWentWrong}</p>
-                <h5>✅ How It Was Minimized:</h5><p>${s.howMinimized}</p>
-                <h5>🌱 How This Helps:</h5><p>${s.howHelps}</p>
-              </article>
-            `;
+                <div class="blog-post">
+                  <h2 class="blog-post-title mb-2">${s.title}</h2>
+                  <p>${s.content}</p>
+                  <hr />
+                  <h5>🧠 Bias Name:</h5><p>${s.biasName}</p>
+                  <h5>📘 Bias Definition:</h5><p>${s.biasDefinition}</p>
+                  <h5>❗ What Went Wrong:</h5><p>${s.whatWentWrong}</p>
+                  <h5>✅ How It Was Minimized:</h5><p>${s.howMinimized}</p>
+                  <h5>🌱 How This Helps:</h5><p>${s.howHelps}</p>
+                </div>
+              `;
             document.getElementById("loadingMessage").classList.add("d-none");
             document
               .getElementById("storyContainer")
               .classList.remove("d-none");
           } else {
             document.getElementById("loadingMessage").innerText =
-              "  Story could not be generated. Try again later.";
+              "⚠️ Story could not be generated. Try again later.";
           }
         })
         .catch((err) => {
           document.getElementById("loadingMessage").innerText =
-            "  Error loading story.";
+            "⚠️ Error loading story.";
           console.error(err);
         });
     </script>

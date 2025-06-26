@@ -1,3 +1,4 @@
+// storyScheduler.js
 const cron = require("node-cron");
 const User = require("../models/user");
 const Data = require("../models/dataSchema");
@@ -10,6 +11,7 @@ async function generateTodayOnce() {
   const today = new Date().toISOString().split("T")[0];
 
   try {
+    // delete only story for today — good
     await Story.deleteMany({ date: today });
 
     const user = await User.findOne();
@@ -34,6 +36,7 @@ async function generateTodayOnce() {
       return;
     }
 
+    // OK to keep userId here since it's specific
     await Story.create({
       ...storyContent,
       userId: user._id,

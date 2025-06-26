@@ -24,21 +24,6 @@ body {
   margin-bottom: 50px;
 }
 
-.footer {
-  background-color: #000;
-  color: #ccc;
-  text-align: center;
-  padding: 20px 0;
-}
-
-.footer a {
-  color: #ccc;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: #fff;
-}
 input:focus,
 textarea:focus,
 select:focus {
@@ -60,4 +45,40 @@ select {
 input::placeholder,
 textarea::placeholder {
   color: #888;
+}
+
+.footer-pro {
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  color: #6c757d;
+  padding-top: 20px;
+}
+
+.footer-pro .footer-logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2f3e9e;
+  text-decoration: none;
+}
+
+.footer-pro .footer-logo:hover {
+  color: #4b52b6;
+}
+
+.footer-pro .nav-link {
+  color: #6c757d;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 6px 12px;
+  transition: color 0.3s ease;
+}
+
+.footer-pro .nav-link:hover {
+  color: #2f3e9e;
+}
+
+.footer-pro .text-muted {
+  font-size: 15px;
+  color: #6c757d;
 }

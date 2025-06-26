@@ -1,0 +1,226 @@
+.quiz-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  min-height: 100vh;
+}
+
+.quiz-box {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hidden {
+  display: none !important;
+}
+#quiz-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.radio-button {
+  width: 100%;
+  max-width: 300px;
+  text-align: left;
+}
+
+h2 {
+  text-align: center;
+  width: 100%;
+}
+
+label {
+  display: inline;
+  margin: 10px 0;
+}
+span,
+.custom {
+  position: relative;
+  left: 8px;
+  bottom: 2px;
+}
+#custom-answer {
+  margin-top: 10px;
+  padding: 5px;
+  width: 95%;
+}
+
+button {
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 0;
+  min-height: 3rem;
+  padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: 30%;
+}
+
+button:hover,
+button:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  background-color: #f0f0f1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+#feedback-screen {
+  display: none;
+  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  z-index: 9999;
+  color: #222;
+}
+.radio-button {
+  display: block;
+  position: relative;
+  margin: 12px 0;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+  color: #333;
+}
+
+.radio-button input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-button__custom {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 2px solid #555;
+  border-radius: 50%;
+  transition: 0.3s ease;
+}
+
+.radio-button:hover input ~ .radio-button__custom {
+  border-color: #4c8bf5;
+  transform: translateY(-50%) scale(1.2);
+  box-shadow: 0 0 10px #4c8bf580;
+}
+.radio-button input:checked ~ .radio-button__custom {
+  border: 6px solid #4c8bf5;
+}
+.radio-button input:checked ~ span {
+  color: #4c8bf5;
+}
+.form-input {
+  --width-of-input: 60%;
+  --border-height: 1px;
+  --border-before-color: rgba(221, 221, 221, 0.39);
+  --border-after-color: #5891ff;
+  --input-hovered-color: #4985e01f;
+  position: relative;
+  width: var(--width-of-input);
+}
+.input {
+  color: #000;
+  font-size: 0.9rem;
+  background-color: transparent;
+  width: 60%;
+  box-sizing: border-box;
+  padding-inline: 0.5em;
+  padding-block: 0.7em;
+  border: none;
+  border-bottom: var(--border-height) solid var(--border-before-color);
+}
+.input-border {
+  position: absolute;
+  background: var(--border-after-color);
+  width: 0%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  transition: 0.3s;
+}
+input:hover {
+  background: var(--input-hovered-color);
+}
+
+input:focus {
+  outline: none;
+}
+input:focus ~ .input-border {
+  width: 100%;
+}
+
+/* Responsive fix for mobile */
+@media (max-width: 576px) {
+  .quiz-container {
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+  #quiz-form {
+    margin-left: 3rem;
+  }
+  .quiz-option {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .quiz-option input[type="radio"] {
+    margin-bottom: 5px;
+  }
+
+  #custom-answer {
+    width: 100%;
+  }
+  .margin {
+    margin-right: 80px;
+  }
+  button {
+    width: 100%;
+    margin-left: -10px;
+  }
+}

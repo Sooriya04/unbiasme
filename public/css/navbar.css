@@ -12,17 +12,20 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: #f4f4f4;
+  background: #ffffff;
   position: relative;
   z-index: 2;
 }
 .logo {
   font-size: 2rem;
-  color: #070707;
+  color: #2f3e9e;
   text-decoration: none;
 }
+.nav-link a {
+  color: #2f3e9e;
+}
 .nav-link a:hover {
-  color: #070707;
+  color: #2f3e9e;
 }
 .hamburger {
   cursor: pointer;
@@ -93,7 +96,7 @@ body {
   text-align: center;
   text-decoration: none;
   font-weight: bold;
-  color: #070707;
+  color: #f67280;
 }
 .nav-link.show {
   display: flex;
@@ -130,7 +133,7 @@ body {
   height: 2px;
   bottom: 10px;
   left: 0;
-  background-color: #070707;
+  background-color: #f67280;
   transition: transform 0.25s ease-out;
 }
 
