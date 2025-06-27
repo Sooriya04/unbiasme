@@ -9,8 +9,7 @@
 
 ### 🧠 Lathika — Research Strategist & Logic Designer
 
-Lathika is the conceptual backbone of **UnbiasMe**. She meticulously researched cognitive psychology and human biases to shape the entire quiz flow, question design, and analytical model. Her work ensures the platform delivers meaningful insight and promotes self-awareness through scientifically grounded content.
-
+Lathika is the conceptual backbone of **UnbiasMe**. She meticulously researched cognitive psychology and human biases to design the quiz flow, structure the question logic, and build the analytical mapping model. Her work ensures the platform delivers meaningful insights and promotes self-awareness through scientifically grounded, purpose-driven content.
 - 🔗 [LinkedIn](https://www.linkedin.com/in/lathika-m-a78781303/)
 - 📷 [Instagram](https://www.instagram.com/_.lathx_/)
 - 💻 [GitHub](https://github.com/Lathika2508)
