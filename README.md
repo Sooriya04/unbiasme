@@ -7,7 +7,7 @@
 ## 👥 About the Team Behind UnbiasMe
 **UnbiasMe** is the result of a collaborative effort between a developer and a researcher passionate about psychology, bias awareness, and technology.
 
-### 🧠 Lathika — Research Strategist & Content Architect
+### 🧠 Lathika — Research Strategist & Logic Designer
 
 Lathika is the conceptual backbone of **UnbiasMe**. She meticulously researched cognitive psychology and human biases to shape the entire quiz flow, question design, and analytical model. Her work ensures the platform delivers meaningful insight and promotes self-awareness through scientifically grounded content.
 
