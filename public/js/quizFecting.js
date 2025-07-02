@@ -5,7 +5,6 @@ const userAnswers = {};
 const answerScores = { A: 1, B: 2, C: 3, D: 4, E: 5 };
 
 const traitTracker = {};
-
 const traitScores = {};
 async function fetchQuestions() {
   const res = await fetch("/quiz/questions");
@@ -27,7 +26,6 @@ function loadQuestion() {
     .querySelectorAll('input[name="option"]')
     .forEach((el) => (el.checked = false));
 }
-
 function submitAnswer() {
   const selected = document.querySelector('input[name="option"]:checked');
   if (!selected) return alert("Please select an answer.");
@@ -52,31 +50,34 @@ function submitAnswer() {
   setTimeout(() => {
     document.getElementById("feedback-screen").style.display = "none";
     currentQuestion++;
+
+    // Check if all questions are done
     if (currentQuestion < questions.length) {
       document.getElementById("quiz-container").style.display = "block";
       loadQuestion();
     } else {
-      showResult();
+      try {
+        showResult();
+      } catch (err) {
+        console.error("Error in showResult():", err);
+      }
     }
-  }, 1000);
+  }, 2000);
 }
 function showResult() {
   const resultScreen = document.getElementById("result-screen");
   const traitContainer = document.getElementById("trait-progress-bars");
   traitContainer.innerHTML = "";
 
-  // Calculate trait scores
   for (const trait in traitTracker) {
     const { total, count } = traitTracker[trait];
     const score = parseFloat(((total / (count * 5)) * 100).toFixed(1));
     traitScores[trait] = score;
 
-    // Color logic based on score
     let color = "bg-danger";
     if (score >= 70) color = "bg-success";
     else if (score >= 50) color = "bg-warning";
 
-    // Append progress bar
     const progress = document.createElement("div");
     progress.className = "col-12 mb-3";
     progress.innerHTML = `
@@ -92,12 +93,12 @@ function showResult() {
     traitContainer.appendChild(progress);
   }
 
-  // Hide quiz and show result screen
-  document.getElementById("quiz-container")?.classList.add("hidden");
-  document.getElementById("feedback-screen")?.classList.add("hidden");
-  resultScreen.style.display = "block";
+  // Show result screen, hide quiz and feedback
+  document.getElementById("quiz-container").classList.add("hidden");
+  document.getElementById("feedback-screen").classList.add("hidden");
+  document.getElementById("result-screen").style.display = "block";
 
-  // Save scores to DB
+  // Save result to DB
   fetch("/quiz/submit-scores", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -105,9 +106,8 @@ function showResult() {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(" Scores saved");
+      console.log("Scores saved");
 
-      // Gemini analysis
       return fetch("/quiz/analyze-gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

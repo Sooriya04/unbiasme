@@ -1,7 +1,6 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-/* Container and Quiz Box */
 .quiz-container {
   display: flex !important;
   justify-content: center !important;

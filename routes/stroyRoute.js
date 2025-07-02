@@ -4,12 +4,12 @@ const router = express.Router();
 const Story = require("../models/storySchema");
 const { generateDailyStory } = require("../services/generateFullStory");
 
+// Page to view today's story (UI loads it via /story/api)
 router.get("/story", async (req, res) => {
-  const today = new Date().toISOString().slice(0, 10);
-  const story = await Story.findOne({ date: today });
-  res.render("pages/story", { story });
+  res.render("pages/story", { story: null });
 });
-// storyRoute.js (only the relevant part shown)
+
+// API to get or generate today's story
 router.get("/story/api", async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
 
@@ -17,74 +17,14 @@ router.get("/story/api", async (req, res) => {
     let story = await Story.findOne({ date: today });
     if (story) return res.json({ ready: true, story });
 
-    const generatedStory = await generateDailyStory();
+    const generated = await generateDailyStory();
+    if (!generated) return res.status(500).json({ ready: false });
 
-    if (!generatedStory) {
-      return res.status(500).json({
-        ready: false,
-        message: "Story could not be generated. Try again later.",
-      });
-    }
-
-    const storyData = {
-      ...generatedStory,
-      date: today,
-    };
-
-    story = await Story.create(storyData);
-
+    story = await Story.create({ ...generated, date: today });
     return res.json({ ready: true, story });
   } catch (err) {
     console.error("/story/api error:", err);
-    return res.status(500).json({ ready: false });
-  }
-});
-
-router.post("/story", async (req, res) => {
-  try {
-    const userId = req.session?.userId || req.user?.id || null;
-    const storyData = {
-      ...req.body,
-      ...(userId && { userId }),
-    };
-
-    const newStory = await Story.create(storyData);
-    res.status(201).json(newStory);
-  } catch (err) {
-    console.error("Create story error:", err);
-    res.status(400).json({ error: "Story could not be created" });
-  }
-});
-
-router.get("/story/export", async (req, res) => {
-  try {
-    const stories = await Story.find().sort({ date: -1 });
-    res.json(stories);
-  } catch (err) {
-    console.error("Export error:", err);
-    res.status(500).json({ error: "Could not fetch stories" });
-  }
-});
-
-router.put("/story/:id", async (req, res) => {
-  try {
-    const updated = await Story.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    res.json(updated);
-  } catch (err) {
-    console.error("Update story error:", err);
-    res.status(400).json({ error: "Could not update story" });
-  }
-});
-
-router.delete("/story/:id", async (req, res) => {
-  try {
-    await Story.findByIdAndDelete(req.params.id);
-    res.json({ message: "Story deleted" });
-  } catch (err) {
-    console.error("Delete story error:", err);
-    res.status(400).json({ error: "Could not delete story" });
+    res.status(500).json({ ready: false });
   }
 });
 

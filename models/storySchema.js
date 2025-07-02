@@ -6,7 +6,7 @@ const storySchema = new mongoose.Schema({
     ref: "User",
     required: false,
   },
-  date: { type: String },
+  date: { type: String, unique: true }, // 👈 prevents duplicate
   title: String,
   content: String,
   biasName: String,
@@ -16,4 +16,5 @@ const storySchema = new mongoose.Schema({
   howHelps: String,
 });
 
+storySchema.index({ date: 1 }, { unique: true });
 module.exports = mongoose.model("Story", storySchema);
