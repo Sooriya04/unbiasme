@@ -1,0 +1,542 @@
+[{
+  "trait": "Extraversion",
+  "question": "You're at a party with mostly unfamiliar people. You feel energized and start multiple conversations.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer solitude and find large groups draining.",
+    "B": "You may enjoy calm environments over social energy.",
+    "C": "You’re flexible depending on your energy and context.",
+    "D": "You are energized by social interaction.",
+    "E": "You thrive in social settings and love engaging with people."
+  }
+},
+{
+  "trait": "Extraversion",
+  "question": "During a group activity, you naturally take charge and guide others.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer to follow rather than lead in groups.",
+    "B": "You sometimes contribute but don’t seek leadership.",
+    "C": "You may lead or follow depending on the situation.",
+    "D": "You are comfortable guiding and supporting a group.",
+    "E": "You naturally step up and lead when needed."
+  }
+},
+{
+  "trait": "Extraversion",
+  "question": "A friend invites you to a large social event after a long day—you gladly accept.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You’d rather rest than socialize after a tiring day.",
+    "B": "You prefer quiet recovery over excitement.",
+    "C": "It depends on your energy levels and mood.",
+    "D": "You enjoy social recharge even when tired.",
+    "E": "Social events energize you even after a long day."
+  }
+},
+{
+  "trait": "Extraversion",
+  "question": "You see someone new in your class and introduce yourself immediately.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You find it hard to initiate contact with strangers.",
+    "B": "You hesitate before introducing yourself.",
+    "C": "You might introduce yourself based on context.",
+    "D": "You’re comfortable meeting new people.",
+    "E": "You actively seek to connect with others."
+  }
+},
+{
+  "trait": "Extraversion",
+  "question": "You enjoy being the center of attention during presentations or public events.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer to stay in the background.",
+    "B": "You’re not comfortable in the spotlight.",
+    "C": "You're okay with some attention when necessary.",
+    "D": "You enjoy engaging audiences.",
+    "E": "You thrive on being in the spotlight."
+  }
+},
+{
+
+  "trait": "Extraversion",
+  "question": "You often choose team projects over working alone.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer working independently.",
+    "B": "You work better on your own most of the time.",
+    "C": "You're open to both solo and group work.",
+    "D": "You value collaboration and shared ideas.",
+    "E": "Teamwork motivates and energizes you."
+  }
+},
+{
+  "trait": "Agreeableness",
+  "question": "A colleague is stressed about a deadline. You offer to help, even if it means staying late.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prioritize your own time and responsibilities.",
+    "B": "You may help if it’s convenient.",
+    "C": "You weigh the situation before acting.",
+    "D": "You often support others when needed.",
+    "E": "You’re highly empathetic and selfless."
+  }
+},
+{
+  "trait": "Agreeableness",
+  "question": "A friend makes a mistake that affects your work—you forgive them easily.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You struggle to forgive when wronged.",
+    "B": "Forgiveness takes time for you.",
+    "C": "You balance feelings and relationships.",
+    "D": "You tend to let go of mistakes quickly.",
+    "E": "You’re very forgiving and value harmony."
+  }
+},
+{
+  "trait": "Agreeableness",
+  "question": "You often prioritize others’ needs over your own in group decisions.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You focus more on personal outcomes.",
+    "B": "You try to balance needs but prefer your way.",
+    "C": "You compromise when it feels fair.",
+    "D": "You often yield for group benefit.",
+    "E": "You consistently put others first."
+  }
+},
+{
+  "trait": "Agreeableness",
+  "question": "You go out of your way to avoid arguments, even when you’re right.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You believe in standing your ground.",
+    "B": "You engage in conflict when needed.",
+    "C": "You choose your battles wisely.",
+    "D": "You value peace over proving a point.",
+    "E": "You avoid conflict to maintain harmony."
+  }
+},
+{
+  "trait": "Agreeableness",
+  "question": "A stranger needs help carrying something heavy. You quickly offer assistance.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You’re unlikely to assist unless necessary.",
+    "B": "You hesitate to help unfamiliar people.",
+    "C": "You consider helping when it feels safe.",
+    "D": "You’re quick to help when possible.",
+    "E": "Helping others is instinctive for you."
+  }
+},
+{
+  "trait": "Agreeableness",
+  "question": "When you hear someone being criticized harshly, you feel the need to comfort them.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You tend to stay detached in such situations.",
+    "B": "You may feel sympathy but don't act.",
+    "C": "You respond based on the situation.",
+    "D": "You usually offer comfort or reassurance.",
+    "E": "You’re very empathetic and supportive."
+  }
+},
+{
+  "trait": "Conscientiousness",
+  "question": "You receive a project due in two weeks. You create a detailed plan and stick to it.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You tend to approach tasks spontaneously.",
+    "B": "You may plan loosely but don’t always follow through.",
+    "C": "You plan when needed but can be flexible.",
+    "D": "You value structure and tend to stick to it.",
+    "E": "You're highly organized and thrive on planning."
+  }
+},
+{
+  "trait": "Conscientiousness",
+  "question": "Your desk and workspace are usually neat and organized.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You’re comfortable with disorder and spontaneity.",
+    "B": "You tolerate some messiness in your environment.",
+    "C": "Your organization depends on your mood.",
+    "D": "You prefer keeping things tidy and structured.",
+    "E": "You maintain strict order in your workspace."
+  }
+},
+{
+  "trait": "Conscientiousness",
+  "question": "Even when no one’s watching, you double-check your work for errors.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You focus on speed over perfection.",
+    "B": "You occasionally overlook details.",
+    "C": "You try to be accurate when possible.",
+    "D": "You care about the quality of your work.",
+    "E": "You hold yourself to high personal standards."
+  }
+},
+{
+  "trait": "Conscientiousness",
+  "question": "You consistently arrive early to appointments and deadlines.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You often run late or miss timelines.",
+    "B": "You struggle to stay punctual.",
+    "C": "You aim to be on time but sometimes fall behind.",
+    "D": "You usually arrive early or on time.",
+    "E": "You are exceptionally punctual and reliable."
+  }
+},
+{
+  "trait": "Conscientiousness",
+  "question": "You resist distractions when working on important tasks.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You often get sidetracked by interruptions.",
+    "B": "You try to focus but struggle with distractions.",
+    "C": "You focus depending on your interest level.",
+    "D": "You are generally focused during work.",
+    "E": "You have strong self-control and discipline."
+  }
+},
+{
+  "trait": "Conscientiousness",
+  "question": "You always make to-do lists and enjoy checking off completed items.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You rarely use structured tools for productivity.",
+    "B": "You sometimes plan but don’t follow through.",
+    "C": "You occasionally use lists for guidance.",
+    "D": "You find lists help you stay on track.",
+    "E": "You rely on lists and enjoy completing tasks."
+  }
+},
+{
+  "trait": "Neuroticism",
+  "question": "After a minor mistake, you replay it in your head for hours.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You let go of errors quickly.",
+    "B": "You may feel regret but move on easily.",
+    "C": "You reflect but not obsessively.",
+    "D": "You often dwell on your actions.",
+    "E": "You find it hard to stop overthinking."
+  }
+},
+{
+  "trait": "Neuroticism",
+  "question": "You often worry about things going wrong, even if they seem unlikely.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You’re usually optimistic and calm.",
+    "B": "You manage anxiety with confidence.",
+    "C": "You worry occasionally depending on context.",
+    "D": "You often think through worst-case scenarios.",
+    "E": "You experience frequent worry or dread."
+  }
+},
+{
+  "trait": "Neuroticism",
+  "question": "When you receive criticism, it affects your mood for the rest of the day.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You take feedback constructively and move on.",
+    "B": "You feel it briefly but recover quickly.",
+    "C": "You reflect on criticism depending on tone.",
+    "D": "Criticism can make you feel discouraged.",
+    "E": "Negative feedback deeply impacts your emotions."
+  }
+},
+{
+  "trait": "Neuroticism",
+  "question": "You find it hard to calm down after getting upset.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You bounce back from stress quickly.",
+    "B": "You usually regain composure soon.",
+    "C": "You need time but eventually calm down.",
+    "D": "Strong emotions stay with you for a while.",
+    "E": "You remain upset for extended periods."
+  }
+},
+{
+  "trait": "Neuroticism",
+  "question": "Before a major event, you feel intense anxiety or dread.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You feel calm and excited about challenges.",
+    "B": "You feel slightly nervous but manage well.",
+    "C": "You prepare yourself emotionally for events.",
+    "D": "You feel uneasy before big situations.",
+    "E": "You experience strong stress before events."
+  }
+},
+{
+  "trait": "Neuroticism",
+  "question": "Unexpected changes make you feel overwhelmed or uneasy.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You adapt quickly to new circumstances.",
+    "B": "You handle change with some discomfort.",
+    "C": "You adjust over time to changes.",
+    "D": "Change causes stress and uncertainty.",
+    "E": "You find change highly unsettling."
+  }
+},
+{
+  "trait": "Openness to Experience",
+  "question": "You're invited to try a cuisine you've never had before—you’re excited to go.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer familiar and routine choices.",
+    "B": "You hesitate to try new things.",
+    "C": "You’re open to new experiences depending on context.",
+    "D": "You enjoy trying different things.",
+    "E": "You eagerly seek out new experiences."
+  }
+},
+{
+  "trait": "Openness to Experience",
+  "question": "You enjoy discussing abstract topics like time, consciousness, or art.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer practical, concrete topics.",
+    "B": "You enjoy some depth but avoid abstract themes.",
+    "C": "You’re curious when in the right setting.",
+    "D": "You like exploring complex ideas.",
+    "E": "You deeply enjoy abstract, intellectual discussions."
+  }
+},
+{
+
+  "trait": "Openness to Experience",
+  "question": "When traveling, you avoid tourist spots and seek out local culture.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer sticking to safe, familiar attractions.",
+    "B": "You enjoy known places over surprises.",
+    "C": "You balance between popular and unique spots.",
+    "D": "You seek authentic cultural experiences.",
+    "E": "You actively explore beyond the mainstream."
+  }
+},
+{
+  "trait": "Openness to Experience",
+  "question": "You frequently try new hobbies just to see what you enjoy.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer sticking with what you know.",
+    "B": "You try new things occasionally.",
+    "C": "You explore new hobbies now and then.",
+    "D": "You regularly test new interests.",
+    "E": "You actively seek novel experiences."
+  }
+},
+{
+  "trait": "Openness to Experience",
+  "question": "You often imagine what life would be like in different eras or worlds.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You focus on the present and real.",
+    "B": "You rarely think about fantasy or past.",
+    "C": "You daydream occasionally.",
+    "D": "You like to mentally explore new ideas.",
+    "E": "Imaginative scenarios fascinate you."
+  }
+},
+{
+  "trait": "Openness to Experience",
+  "question": "You enjoy reading fiction, poetry, or philosophy in your free time.",
+  "options": {
+    "A": "Strongly Disagree",
+    "B": "Disagree",
+    "C": "Neutral",
+    "D": "Agree",
+    "E": "Strongly Agree"
+  },
+  "feedback": {
+    "A": "You prefer practical or informative content.",
+    "B": "You rarely choose abstract or artistic reading.",
+    "C": "You occasionally enjoy creative reading.",
+    "D": "You find meaning and value in literature.",
+    "E": "You are drawn to deep and reflective writings."
+  }
+}]
