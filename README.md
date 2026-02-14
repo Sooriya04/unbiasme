@@ -50,11 +50,11 @@ Efficient storage of users, quiz results, AI feedback, and daily content using M
 
 | Layer        | Tech Stack                    |
 | ------------ | ----------------------------- |
-| **Frontend** | HTML, CSS, EJS, Bootstrap     |
+| **Frontend** | React JS    |
 | **Backend**  | Node.js, Express.js           |
 | **Database** | MongoDB with Mongoose ORM     |
 | **AI Layer** | Google Gemini API (2.0 Flash) |
-| **Auth**     | Session-based login system    |
+| **Auth**     | JWT    |
 | **Emailing** | Nodemailer (SMTP via Gmail)   |
 
 ---
